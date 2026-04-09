@@ -1,0 +1,8 @@
+# config.yaml.template
+token: "###ZARF_VAR_RKE2_TOKEN###"
+server: "https://###ZARF_VAR_SERVER_IP###:9345"
+tls-san:
+  - "###ZARF_VAR_SERVER_IP###"
+write-kubeconfig-mode: "0644"
+# 에어갭 전용 옵션
+airgap: true
