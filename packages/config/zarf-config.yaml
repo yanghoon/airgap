@@ -1,0 +1,10 @@
+# TODO: Docs Link
+# 
+# ln -sf /opt/airgap/config/zarf-config.yaml ~/.zarf/zarf-config.yaml
+# ln -sf /opt/airgap/config/zarf-config.yaml /root/.zarf/zarf-config.yaml
+
+log_level: info
+
+package:
+  create:
+    output: /opt/airgap/packages/

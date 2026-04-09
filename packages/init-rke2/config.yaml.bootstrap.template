@@ -1,5 +1,4 @@
-# config.yaml.template
-token: "###ZARF_VAR_RKE2_TOKEN###"
+# config.yaml.bootstrap.template
 server: "https://###ZARF_VAR_SERVER_IP###:9345"
 tls-san:
   - "###ZARF_VAR_SERVER_IP###"
