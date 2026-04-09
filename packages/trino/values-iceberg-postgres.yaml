@@ -1,0 +1,17 @@
+global:
+  postgresql:
+    auth:
+      username: iceberg
+      password: iceberg
+      database: iceberg
+
+primary:
+  persistence:
+    enabled: false
+    storageClass: local-storage
+    size: 1Gi
+
+architecture: standalone
+
+replication:
+  enabled: false

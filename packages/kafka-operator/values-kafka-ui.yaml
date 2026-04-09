@@ -1,0 +1,15 @@
+# https://ui.docs.kafbat.io/configuration/helm-chars/quick-start
+yamlApplicationConfig:
+  auth:
+    type: disabled
+  management:
+    health:
+      ldap:
+        enabled: false
+  kafka:
+    clusters:
+      - name: my-cluster
+        bootstrapServers: my-cluster-kafka-bootstrap.kafka-operator:9092
+
+service:
+  type: NodePort

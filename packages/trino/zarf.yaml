@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/zarf-dev/zarf/v0.74.2/zarf.schema.json
+kind: ZarfPackageConfig
+metadata:
+  name: trino
+  description: auto-generated using `zarf dev generate`
+  version: 1.42.1
+
+variables:
+  - name: ICEBERG_REST_POSTGRES_PV_PATH
+    description: The local path on the node for the Iceberg REST Postgres PV
+    default: /mnt/data/local-pv/iceberg-rest-postgres-0
+  - name: ICEBERG_REST_POSTGRES_NODE_NAME
+    description: The name of the node where the Iceberg REST Postgres PV will be created
+    default: node1
+
+components:
+  # zarf dev generate postgresql --url https://charts.bitnami.com/bitnami --version 18.5.14 --output-directory .
+  - name: postgresql
+    required: true
+    charts:
+      - name: postgresql
+        version: 18.5.14
+        url: https://charts.bitnami.com/bitnami
+        namespace: iceberg
+        valuesFiles:
+          - values-iceberg-postgres.yaml
+    # images:
+    #   - docker.io/bitnami/postgresql:15.8.0-debian-11-r0
+  
+  - name: iceberg-rest
+    required: true
+    manifests:
+      - name: iceberg-rest
+        namespace: iceberg
+        files:
+          - manifest-iceberg-rest.yaml
+    images:
+      - docker.io/tabulario/iceberg-rest:1.5.0
+
+  # zarf dev generate trino --url https://trinodb.github.io/charts --version 1.42.1 --output-directory .
+  - name: trino
+    required: true
+    charts:
+      - name: trino
+        version: 1.42.1
+        url: https://trinodb.github.io/charts
+        namespace: trino
+        valuesFiles:
+          - values-trino.yaml
+    images:
+      - trinodb/trino:479
+  

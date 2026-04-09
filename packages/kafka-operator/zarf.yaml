@@ -1,0 +1,54 @@
+kind: ZarfPackageConfig
+metadata:
+  name: kafka-operator
+  version: 0.0.1
+
+variables:
+  - name: KAFKA_0_PV_PATH
+    description: The local path on the node for the Kafka PV
+    default: /mnt/data/local-pv/kafka-0
+  - name: KAFKA_0_NODE_NAME
+    description: The name of the node where the Kafka PV will be created
+    default: node1
+
+components:
+  - name: strimzi-kafka-operator
+    required: true
+    charts:
+      - name: strimzi-kafka-operator
+        url: https://strimzi.io/charts
+        version: 0.50.1
+        namespace: kafka-operator
+        valuesFiles:
+          - values-strimzi-kafka-operator.yaml
+    images:
+      - quay.io/strimzi/operator:0.50.1
+      # Possible images - strimzi-kafka-operator
+      - quay.io/strimzi/buildah:0.50.1
+      - quay.io/strimzi/kafka-bridge:0.33.1
+      - quay.io/strimzi/kafka:0.50.1-kafka-4.1.1
+      - quay.io/strimzi/kaniko-executor:0.50.1
+      - quay.io/strimzi/maven-builder:0.50.1
+      # Cosign artifacts for images - strimzi-kafka-operator
+      - quay.io/strimzi/kafka-bridge:sha256-c871fc40e920a69ab4b44efa80068a77849803142b20f22cd6f787c85cba481a.sig
+
+  # zarf dev generate kafka-ui --url https://kafbat.github.io/helm-charts --version 1.6.0 --output-directory .
+  - name: kafka-ui
+    required: true
+    charts:
+      - name: kafka-ui
+        version: 1.6.0
+        url: https://kafbat.github.io/helm-charts
+        namespace: kafka-operator
+        valuesFiles:
+          - values-kafka-ui.yaml
+    images:
+      - ghcr.io/kafbat/kafka-ui:v1.4.2
+  
+  - name: my-kafka
+    required: false
+    manifests:
+      - name: my-kafka.yaml
+        namespace: kafka-operator
+        files:
+          - manifest-my-kafka.yaml

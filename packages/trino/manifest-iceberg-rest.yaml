@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv-iceberg-rest-postgres-0
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: ###ICEBERG_REST_POSTGRES_PV_PATH###
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - ###ICEBERG_REST_POSTGRES_NODE_NAME###
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iceberg-rest-env
+  namespace: iceberg
+  labels:
+    app: iceberg-rest
+
+data:
+  CATALOG_REST_URL: http://iceberg-rest.iceberg.svc.cluster.local
+  CATALOG_WAREHOUSE: s3://iceberg/warehouse
+  CATALOG_URI: jdbc:postgresql://postgres.iceberg.svc.cluster.local:5432/iceberg
+  CATALOG_JDBC_USER: iceberg
+  CATALOG_JDBC_PASSWORD: iceberg
+  CATALOG_IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
+  CATALOG_S3_ENDPOINT: http://minio.iceberg.svc.cluster
+  CATALOG_S3_ACCESS__KEY__ID: minioadmin
+  CATALOG_S3_SECRET__ACCESS__KEY: minioadmin
+  CATALOG_S3_PATH__STYLE__ACCESS: "true"
+  AWS_REGION: us-east-1
