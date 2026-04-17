@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/zarf-dev/zarf/v0.74.2/zarf.schema.json
+kind: ZarfPackageConfig
+
+metadata:
+  name: postgresql
+  description: auto-generated using `zarf dev generate`
+  version: 18.5.14
+
+components:
+  - name: postgresql
+    required: true
+    charts:
+      - name: postgresql
+        version: 18.5.14
+        url: https://charts.bitnami.com/bitnami
+        namespace: postgresql

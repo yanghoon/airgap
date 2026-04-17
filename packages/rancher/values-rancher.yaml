@@ -1,0 +1,14 @@
+# systemDefaultRegistry: zarf-docker-registry.zarf:5000
+
+replicas: 1
+
+ingress:
+  enabled: false
+  tls:
+    source: none
+
+service:
+  type: NodePort
+  nodePorts:
+    http: 30080
+    https: 30443

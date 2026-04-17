@@ -1,0 +1,66 @@
+apiVersion: zarf.dev/v1alpha1
+kind: ZarfPackageConfig
+metadata:
+  name: rancher
+  version: 2.13.3
+  description: A Rancher Server package for air-gapped environments.
+
+components:
+  - name: rancher
+    required: true
+    description: Rancher Server
+    charts:
+      - name: rancher
+        version: 2.13.3
+        url: https://releases.rancher.com/server-charts/stable
+        namespace: cattle-system
+        valuesFiles:
+          - values-rancher.yaml
+    actions:
+      onDeploy:
+        after:
+          - cmd: |
+              echo '
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: zarf-connect-rancher
+                namespace: cattle-system
+                labels:
+                  zarf.dev/package: rancher
+                  zarf.dev/connect-name: rancher
+                annotaions:
+                  zarf.dev/connect-description: Rancher Server Management Dashboard
+              spec:
+                type: ClusterIP
+                ports:
+                  - name: http-internal
+                    port: 443
+                    protocol: TCP
+                selector:
+                  app: rancher
+                sessionAffinity: None
+                ipFamilies:
+                  - IPv4
+                ipFamilyPolicy: SingleStack
+              ' | zarf tools kubectl apply -f /dev/stdin
+    images:
+      - rancher/shell:v0.6.2
+      - rancher/rancher:v2.13.3
+      - rancher/rancher-webhook:v0.9.3
+
+      - rancher/fleet:v0.14.3
+      - rancher/fleet-agent:v0.14.3
+
+      - rancher/turtles:v0.25.4
+      - rancher/kuberlr-kubectl:v5.0.0
+
+      - rancher/system-upgrade-controller:v0.17.0
+  
+  - name: rancher-namespace
+    required: true
+    description: Namespace for Created by Rancher Server
+    manifests:
+      - name: rancher-namespace
+        files:
+          - manifests/rancher-namespace.yaml

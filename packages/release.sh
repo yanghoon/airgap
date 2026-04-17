@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OUT_DIR=/opt/airgap
-ZARF_VERSION=v0.74.1
+ZARF_VERSION=v0.73.1
 
 sudo mkdir -p $OUT_DIR/bin
 sudo mkdir -p $OUT_DIR/packages
