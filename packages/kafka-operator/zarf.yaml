@@ -51,4 +51,4 @@ components:
       - name: my-kafka.yaml
         namespace: kafka-operator
         files:
-          - manifest-my-kafka.yaml
+          - manifests/my-kafka.yaml

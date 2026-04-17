@@ -22,14 +22,14 @@ components:
           - cmd: |
               echo '
               apiVersion: v1
-              kind: Namespace
+              kind: Service
               metadata:
                 name: zarf-connect-rancher
                 namespace: cattle-system
                 labels:
                   zarf.dev/package: rancher
                   zarf.dev/connect-name: rancher
-                annotaions:
+                annotations:
                   zarf.dev/connect-description: Rancher Server Management Dashboard
               spec:
                 type: ClusterIP

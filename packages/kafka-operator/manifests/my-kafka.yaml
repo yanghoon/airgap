@@ -1,31 +1,32 @@
-apiVersion: stroage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-storage
-provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-kafka-0
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-storage
-  local:
-    path: ###KAFKA_0_PV_PATH###
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - ###KAFKA_0_NODE_NAME###
+# ---
+# apiVersion: stroage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: local-storage
+# provisioner: kubernetes.io/no-provisioner
+# volumeBindingMode: WaitForFirstConsumer
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: local-pv-kafka-0
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: local-storage
+#   local:
+#     path: ###KAFKA_0_PV_PATH###
+#   nodeAffinity:
+#     required:
+#       nodeSelectorTerms:
+#         - matchExpressions:
+#             - key: kubernetes.io/hostname
+#               operator: In
+#               values:
+#                 - ###KAFKA_0_NODE_NAME###
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
@@ -39,15 +40,15 @@ spec:
   roles:
     - controller
     - broker
-  strorage:
+  storage:
     # type: ephemeral
     type: jbod
     volumes:
       - id: 0
         type: persistent-claim
         size: 1Gi
-        kafkaMetadata: shared
-        class: local-storage
+        # kafkaMetadata: shared
+        # class: standard
         deleteClaim: false
 ---
 apiVersion: kafka.strimzi.io/v1
