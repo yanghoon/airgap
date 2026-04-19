@@ -1,24 +1,25 @@
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: local-pv-iceberg-rest-postgres-0
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-storage
-  local:
-    path: ###ICEBERG_REST_POSTGRES_PV_PATH###
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - ###ICEBERG_REST_POSTGRES_NODE_NAME###
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: local-pv-iceberg-rest-postgres-0
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: local-storage
+#   local:
+#     path: ###ICEBERG_REST_POSTGRES_PV_PATH###
+#   nodeAffinity:
+#     required:
+#       nodeSelectorTerms:
+#         - matchExpressions:
+#             - key: kubernetes.io/hostname
+#               operator: In
+#               values:
+#                 - ###ICEBERG_REST_POSTGRES_NODE_NAME###
 ---
 apiVersion: v1
 kind: ConfigMap
