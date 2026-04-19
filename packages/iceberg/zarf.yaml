@@ -1,0 +1,95 @@
+kind: ZarfPackageConfig
+metadata:
+  name: iceberg-stack
+  description: "Iceberg REST Catalog with Optional MinIO (Kind optimized)"
+  version: "1.0.0"
+
+variables:
+  - name: ICEBERG_NAMESPACE
+    description: "Target Namespace"
+    default: "iceberg-system"
+
+  # S3 Configuration (Used by both MinIO and Iceberg-REST)
+  - name: ICEBERG_S3_ENDPOINT
+    description: "S3 Endpoint URL (e.g., http://minio.iceberg-system.svc:9000)"
+    default: "http://minio.iceberg-system.svc.cluster.local:9000"
+    prompt: true
+
+  - name: ICEBERG_S3_ACCESS_KEY
+    default: "minioadmin"
+    prompt: true
+
+  - name: ICEBERG_S3_SECRET_KEY
+    default: "minioadmin"
+    prompt: true
+    sensitive: true
+
+  - name: ICEBERG_S3_BUCKET
+    default: "datalake"
+    prompt: true
+
+  # Database Configuration
+  - name: ICEBERG_PG_USER
+    default: "iceberg_admin"
+    prompt: true
+
+  - name: ICEBERG_PG_PASSWORD
+    default: "password123"
+    prompt: true
+    sensitive: true
+
+components:
+  # 필수: PostgreSQL (오프라인 패키징)
+  - name: postgresql
+    required: true
+    charts:
+      - name: postgresql
+        url: https://charts.bitnami.com/bitnami
+        version: 18.5.24
+        # releaseName: postgresql
+        # namespace: ###ZARF_VAR_ICEBERG_NAMESPACE###
+        namespace: iceberg-system
+        valuesFiles:
+          - values-postgres.yaml
+        # set:
+        #   auth.username: ###ZARF_VAR_ICEBERG_PG_USER###
+        #   auth.password: ###ZARF_VAR_ICEBERG_PG_PASSWORD###
+        #   auth.database: iceberg
+        #   primary.persistence.enabled: "false" # Kind 테스트용 (필요시 true)
+    images:
+      - registry-1.docker.io/bitnami/postgresql:latest
+
+  # 필수: Iceberg REST (오프라인 패키징)
+  - name: iceberg-rest
+    required: true
+    manifests:
+      - name: iceberg-rest-manifests
+        # namespace: ###ZARF_VAR_ICEBERG_NAMESPACE###
+        namespace: iceberg-system
+        files:
+          - manifests/iceberg-rest.yaml
+    images:
+      - tabulario/iceberg-rest:1.6.0
+
+  # 선택: MinIO (인터넷 필요, 패키지 용량 최소화)
+  - name: minio
+    required: false
+    description: "Install internal MinIO? (Select N if using external S3)"
+    charts:
+      - name: minio
+        url: https://charts.bitnami.com/bitnami
+        version: 17.0.21
+        # releaseName: minio
+        # namespace: ###ZARF_VAR_ICEBERG_NAMESPACE###
+        namespace: iceberg-system
+        valuesFiles:
+          - values-minio.yaml
+        # set:
+        #   auth.rootUser: ###ZARF_VAR_ICEBERG_S3_ACCESS_KEY###
+        #   auth.rootPassword: ###ZARF_VAR_ICEBERG_S3_SECRET_KEY###
+        #   defaultBuckets: ###ZARF_VAR_ICEBERG_S3_BUCKET###
+    images:
+      - bitnamilegacy/minio:2025.7.23
+      - bitnamilegacy/minio-object-browser:2.0.2
+      # - bitnami/minio-object-browser:2.0.2-debian-12-r3
+      # - bitnami/minio:2025.7.23-debian-12-r3

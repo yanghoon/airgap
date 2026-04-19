@@ -34,3 +34,8 @@ zarf package inspect definition
 zarf connect list
 zarf connect rancher --local-port 8443
 ```
+
+```bash
+curl -u "zarf-pull:$(zarf tools get-creds registry-readonly)" localhost:51351/v2/_catalog
+curl -u "zarf-pull:$(zarf tools get-creds registry-readonly)" localhost:51351/v2/bitnami/postgresql/tags/list
+```

@@ -1,0 +1,8 @@
+auth:
+  username: "###ZARF_VAR_ICEBERG_PG_USER###"
+  password: "###ZARF_VAR_ICEBERG_PG_PASSWORD###"
+  database: "iceberg"
+
+primary:
+  persistence:
+    enabled: false # Kind 환경 개발용

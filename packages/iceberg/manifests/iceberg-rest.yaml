@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iceberg-rest
+  namespace: iceberg-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iceberg-rest
+  template:
+    metadata:
+      labels:
+        app: iceberg-rest
+    spec:
+      containers:
+        - name: iceberg-rest
+          image: tabulario/iceberg-rest:1.6.0
+          ports:
+            - containerPort: 8181
+          env:
+            - name: CATALOG_CATALOG__IMPL
+              value: org.apache.iceberg.jdbc.JdbcCatalog
+            - name: CATALOG_URI
+              value: jdbc:postgresql://postgresql.###ZARF_VAR_ICEBERG_NAMESPACE###.svc.cluster.local:5432/iceberg
+            - name: CATALOG_JDBC_USER
+              value: ###ZARF_VAR_ICEBERG_PG_USER###
+            - name: CATALOG_JDBC_PASSWORD
+              value: ###ZARF_VAR_ICEBERG_PG_PASSWORD###
+            - name: CATALOG_WAREHOUSE
+              value: s3a://###ZARF_VAR_ICEBERG_S3_BUCKET###/warehouse
+            - name: CATALOG_IO__IMPL
+              value: org.apache.iceberg.aws.s3.S3FileIO
+            - name: CATALOG_S3_ENDPOINT
+              value: ###ZARF_VAR_ICEBERG_S3_ENDPOINT###
+            - name: CATALOG_S3_ACCESS__KEY__ID
+              value: ###ZARF_VAR_ICEBERG_S3_ACCESS_KEY###
+            - name: CATALOG_S3_SECRET__ACCESS__KEY
+              value: ###ZARF_VAR_ICEBERG_S3_SECRET_KEY###
+            - name: CATALOG_S3_PATH__STYLE__ACCESS
+              value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iceberg-rest
+  namespace: iceberg-system
+spec:
+  ports:
+    - port: 8181
+      targetPort: 8181
+  selector:
+    app: iceberg-rest

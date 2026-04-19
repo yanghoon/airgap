@@ -1,0 +1,18 @@
+image:
+  repository: bitnamilegacy/minio
+  tag: 2025.7.23
+
+console:
+  image:
+    repository: bitnamilegacy/minio-object-browser
+    tag: 2.0.2
+
+auth:
+  rootUser: "###ZARF_VAR_ICEBERG_S3_ACCESS_KEY###"
+  rootPassword: "###ZARF_VAR_ICEBERG_S3_SECRET_KEY###"
+
+defaultBuckets: "###ZARF_VAR_ICEBERG_S3_BUCKET###"
+
+# 서비스 접근을 위한 ClusterIP 설정
+service:
+  type: ClusterIP
