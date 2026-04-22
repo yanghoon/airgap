@@ -2,15 +2,9 @@ apiVersion: zarf.dev/v1alpha1
 kind: ZarfPackageConfig
 metadata:
   name: rke2-setup
-  description: "온프레미스 고정 노드 환경을 위한 로컬 스토리지 프로비저너 패키지"
-  version: "v0.0.1"
+  description: 온프레미스 고정 노드 환경을 위한 로컬 스토리지 프로비저너 패키지
+  version: v0.0.1
   architecture: amd64
-
-# 패키지 설치 시 사용자로부터 SSD 마운트 경로를 입력받을 수 있도록 상수로 정의
-# constants:
-#   - name: LOCAL_PATH_PROVISIONER_VERSION
-#     description: "Local Path Provisioner의 버전"
-#     value: "v0.0.35"
 
 variables:
   - name: DEFAULT_PATH_FOR_NON_LISTED_NODES 
@@ -19,81 +13,20 @@ variables:
     prompt: true
 
 components:
-  - name: provisioner-core
+  - name: local-path-provisioner
     required: true
     description: "Local Path Provisioner 컨트롤러 및 관련 리소스"
+    
+    charts:
+      - name: local-path-provisioner
+        version: v0.0.35
+        namespace: local-path-storage
+        url: https://github.com/rancher/local-path-provisioner.git
+        gitPath: deploy/chart/local-path-provisioner
+        valuesFiles:
+          - values-local-path-provisioner.yaml
     
     # 폐쇄망 환경에서 필요한 이미지들을 사전 정의하여 Zarf가 미러링하도록 함
     images:
       - rancher/local-path-provisioner:v0.0.35
       - busybox:1.36  # Helper Pod용 이미지
-
-    # 매니페스트 배포
-    manifests:
-      - name: local-path-storage
-        namespace: local-path-storage
-        files:
-          - https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.35/deploy/local-path-storage.yaml
-          # - manifests/local-path-privisioner/config.json
-        
-        # 매니페스트 내의 경로 설정을 사용자가 입력한 STORAGE_PATH로 치환
-        # configmapAndSecretOverrides:
-        #   - name: local-path-config
-        #     key: config.json
-        #     value: |
-        #       {
-        #         "nodePathMap": [
-        #           {
-        #             "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
-        #             "paths": ["###ZARF_CONST_DEFAULT_Path_FOR_NON_LISTED_NODES###"]
-        #           }
-        #         ]
-        #       }
-    files:
-      - source: manifests/local-path-privisioner/config.json
-        target: manifests/local-path-privisioner/config.json
-
-    # 설치 전/후 스크립트 (권한 설정 등)
-    actions:
-      onDeploy:
-        before:
-          - cmd: |
-              echo 'Starting deployment of local-path-provisioner to ###ZARF_CONST_DEFAULT_Path_FOR_NON_LISTED_NODES###'
-          - cmd: |
-              cat manifests/local-path-provisioner/config.json
-        after:
-          - cmd: |
-              # 1. 파일 내용 읽기 및 JSON 패치 생성
-              # yq의 load_str은 파일 내의 특수문자와 줄바꿈을 JSON 규격에 맞게 자동 이스케이프합니다.
-              PATCH_JSON=$(zarf tools yq -n '.data["config.json"] = load_str("manifests/local-path-provisioner/config.json")' -o json)
-              
-              # 2. kubectl patch 실행
-              kubectl patch configmap local-path-config --type merge -p "$PATCH_JSON"
-          - cmd: |
-              kubectl rollout restart deployment/local-path-provisioner -n local-path-storage
-          - cmd: |
-              kubectl wait --for=condition=available --timeout=60s deployment/local-path-provisioner -n local-path-storage
-
-  # - name: config-updater
-  #   actions:
-  #     onDeploy:
-  #       after:
-  #         - cmd: |
-  #             # 1. 파일 내용 읽기 및 JSON 패치 생성
-  #             # yq의 load_str은 파일 내의 특수문자와 줄바꿈을 JSON 규격에 맞게 자동 이스케이프합니다.
-  #             PATCH_JSON=$(yq -n ".data[\"config.json\"] = load_str(\"manifests/config.json\")" -o json)
-              
-  #             # 2. kubectl patch 실행
-  #             kubectl patch configmap <컨피그맵-이름> --type merge -p "$PATCH_JSON"
-  #           description: "manifests/config.json의 내용을 ConfigMap에 업데이트합니다."
-
-
-  # - name: app-workloads
-  #   required: false
-  #   description: "선택사항: Kafka 및 Postgres용 StorageClass 검증용 테스트 Pod"
-  #   charts:
-  #     - name: storage-test
-  #       releaseName: storage-test
-  #       namespace: default
-  #       # 로컬 차트 경로 혹은 git 레포지토리 지정 가능
-  #       url: "./charts/storage-test"
