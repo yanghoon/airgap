@@ -1,0 +1,32 @@
+apiVersion: zarf.dev/v1alpha1
+kind: ZarfPackageConfig
+metadata:
+  name: rke2-setup
+  description: 온프레미스 고정 노드 환경을 위한 로컬 스토리지 프로비저너 패키지
+  version: v0.0.1
+  architecture: amd64
+
+variables:
+  - name: DEFAULT_PATH_FOR_NON_LISTED_NODES 
+    description: "노드 목록에 없는 노드에 대한 기본 경로 (예: SSD가 마운트된 경로)"
+    default: "/data"
+    prompt: true
+
+components:
+  - name: local-path-provisioner
+    required: true
+    description: "Local Path Provisioner 컨트롤러 및 관련 리소스"
+    
+    charts:
+      - name: local-path-provisioner
+        version: v0.0.35
+        namespace: local-path-storage
+        url: https://github.com/rancher/local-path-provisioner.git
+        gitPath: deploy/chart/local-path-provisioner
+        valuesFiles:
+          - values-local-path-provisioner.yaml
+    
+    # 폐쇄망 환경에서 필요한 이미지들을 사전 정의하여 Zarf가 미러링하도록 함
+    images:
+      - rancher/local-path-provisioner:v0.0.35
+      - busybox:1.36  # Helper Pod용 이미지

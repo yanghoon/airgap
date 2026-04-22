@@ -2,20 +2,35 @@ apiVersion: zarf.dev/v1alpha1
 kind: ZarfPackageConfig
 metadata:
   name: rke2-setup
-  description: 온프레미스 고정 노드 환경을 위한 로컬 스토리지 프로비저너 패키지
+  description: ""
   version: v0.0.1
-  architecture: amd64
-
-variables:
-  - name: DEFAULT_PATH_FOR_NON_LISTED_NODES 
-    description: "노드 목록에 없는 노드에 대한 기본 경로 (예: SSD가 마운트된 경로)"
-    default: "/data"
-    prompt: true
 
 components:
-  - name: local-path-provisioner
+  - name: rancher-local-path-provisioner
     required: true
-    description: "Local Path Provisioner 컨트롤러 및 관련 리소스"
+    actions:
+      onCreate:
+        # [Step 1] 패키지 생성 전: 명시적 파일명으로 이미지 추출
+        before:
+          - cmd: |
+              ./zarf tools registry pull rancher/local-path-provisioner:v0.0.35 \
+                local-path-provisioner-v0.0.35.tar --format=tarball
+          - cmd: |
+              ./zarf tools registry pull busybox:1.36 \
+                busybox-1.36.tar --format=tarball
+        
+        # [Step 3] 패키지 생성 후: 생성했던 특정 파일만 정확히 삭제
+        after:
+          - cmd: rm local-path-provisioner-v0.0.35.tar
+          - cmd: rm busybox-1.36.tar
+
+    # [Step 2] 패키징 및 타겟 배포 경로 정의
+    # Zarf는 소스 파일이 존재하는지 검증한 후 패키지에 포함시킵니다.
+    files:
+      - source: local-path-provisioner-v0.0.35.tar
+        target: /var/lib/rancher/rke2/agent/images/local-path-provisioner-v0.0.35.tar
+      - source: busybox-1.36.tar
+        target: /var/lib/rancher/rke2/agent/images/busybox-1.36.tar
     
     charts:
       - name: local-path-provisioner
@@ -25,8 +40,3 @@ components:
         gitPath: deploy/chart/local-path-provisioner
         valuesFiles:
           - values-local-path-provisioner.yaml
-    
-    # 폐쇄망 환경에서 필요한 이미지들을 사전 정의하여 Zarf가 미러링하도록 함
-    images:
-      - rancher/local-path-provisioner:v0.0.35
-      - busybox:1.36  # Helper Pod용 이미지
