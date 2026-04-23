@@ -1,5 +1,11 @@
 # Setup
 
+## Opencode
+
+```bash
+curl -fsSL https://opencode.ai/install | bash -s -- -v 1.14.20
+```
+
 ## on Mac
 
 ### Zarf
