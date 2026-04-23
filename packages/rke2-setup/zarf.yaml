@@ -5,33 +5,39 @@ metadata:
   description: ""
   version: v0.0.1
 
+variables:
+  - name: DEFAULT_PATH_FOR_NON_LISTED_NODES
+    description: Default path for non-listed nodes in the local-path-provisioner configuration
+    default: /data
+    prompt: true
+
 components:
-  - name: rancher-local-path-provisioner
+  - name: rancher-local-path-provisioner-images
     required: true
     actions:
       onCreate:
-        # [Step 1] 패키지 생성 전: 명시적 파일명으로 이미지 추출
         before:
-          - cmd: |
-              ./zarf tools registry pull rancher/local-path-provisioner:v0.0.35 \
-                local-path-provisioner-v0.0.35.tar --format=tarball
-          - cmd: |
-              ./zarf tools registry pull busybox:1.36 \
-                busybox-1.36.tar --format=tarball
-        
-        # [Step 3] 패키지 생성 후: 생성했던 특정 파일만 정확히 삭제
+          - cmd: scripts/local-path-provisioner/images_before.sh
         after:
-          - cmd: rm local-path-provisioner-v0.0.35.tar
-          - cmd: rm busybox-1.36.tar
-
-    # [Step 2] 패키징 및 타겟 배포 경로 정의
-    # Zarf는 소스 파일이 존재하는지 검증한 후 패키지에 포함시킵니다.
+          - cmd: scripts/local-path-provisioner/images_after.sh
     files:
       - source: local-path-provisioner-v0.0.35.tar
         target: /var/lib/rancher/rke2/agent/images/local-path-provisioner-v0.0.35.tar
       - source: busybox-1.36.tar
         target: /var/lib/rancher/rke2/agent/images/busybox-1.36.tar
+  
+  - name: rancher-local-path-provisioner-helm-rke2
+    actions:
+      onCreate:
+        before:
+          - cmd: scripts/local-path-provisioner/helm_before.sh
+        after:
+          - cmd: "rm -rf .tmp"
+    files:
+      - source: .tmp/rke2-helm-local-path-provisioner.yaml
+        target: /var/lib/rancher/rke2/server/manifests/rke2-helm-local-path-provisioner.yaml
     
+  - name: rancher-local-path-provisioner-helm
     charts:
       - name: local-path-provisioner
         version: v0.0.35

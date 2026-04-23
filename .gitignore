@@ -2,3 +2,5 @@ rke2-ansible
 
 packages/*/helm*/**
 zarf-package-*.*
+
+.tmp
