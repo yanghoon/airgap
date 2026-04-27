@@ -1,0 +1,9 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: harbor
+  namespace: kube-system
+spec:
+  # 외부 경로 대신 Base64 데이터를 직접 사용
+  chartContent:
+  targetNamespace: harbor
