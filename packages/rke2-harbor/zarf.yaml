@@ -5,72 +5,93 @@ metadata:
   description: ""
   version: v0.0.1
 
+variables:
+  - name: HARBOR_DOMAIN
+    description: Harbor 접속 도메인
+    default: harbor.local
+    prompt: true
+
+  - name: STORAGE_CLASS
+    description: 데이터 저장에 사용할 StorageClass 명칭
+    default: standard
+    prompt: true
+
+  - name: S3_ENDPOINT
+    description: "S3 엔드포인트 URL (예: s3.amazonaws.com 또는 minio-svc)"
+    prompt: true
+
+  - name: S3_BUCKET
+    description: "Harbor 이미지를 저장할 S3 버킷 명칭"
+    prompt: true
+
+  - name: S3_ACCESS_KEY
+    description: S3 Access Key
+    prompt: true
+
+  - name: S3_SECRET_KEY
+    description: S3 Secret Key
+    prompt: true
+
+  - name: DB_HOST
+    description: 클러스터 내부 Database 서비스 주소
+    default: postgresql.harbor.svc
+    prompt: true
+
+  - name: DB_PASSWORD
+    description: Postgres 'postgres' 유저 패스워드
+    default: harbor 
+    prompt: true
+
 components:
-  - name: rke2-images-harbor
-    required: true
-    actions:
-      onCreate:
-        before:
-          - cmd: scripts/harbor/images.sh download
-        after:
-          - cmd: scripts/harbor/images.sh clean
-    files:
-      - source: goharbor-chartmuseum-photon-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-chartmuseum-photon-v1.10.2.tar
-      - source: goharbor-clair-adapter-photon-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-clair-adapter-photon-v1.10.2.tar
-      - source: goharbor-clair-photon-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-clair-photon-v1.10.2.tar
-      - source: goharbor-harbor-core-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-core-v1.10.2.tar
-      - source: goharbor-harbor-db-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-db-v1.10.2.tar
-      - source: goharbor-harbor-jobservice-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-jobservice-v1.10.2.tar
-      - source: goharbor-harbor-portal-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-portal-v1.10.2.tar
-      - source: goharbor-harbor-registryctl-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-registryctl-v1.10.2.tar
-      - source: goharbor-notary-server-photon-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-notary-server-photon-v1.10.2.tar
-      - source: goharbor-notary-signer-photon-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-notary-signer-photon-v1.10.2.tar
-      - source: goharbor-redis-photon-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-redis-photon-v1.10.2.tar
-      - source: goharbor-registry-photon-v1.10.2.tar
-        target: /var/lib/rancher/rke2/agent/images/goharbor-registry-photon-v1.10.2.tar
+  # - name: rke2-images-harbor
+  #   required: true
+  #   actions:
+  #     onCreate:
+  #       before:
+  #         - cmd: scripts/harbor/images.sh download
+  #       # after:
+  #       #   - cmd: scripts/harbor/images.sh clean
+  #   files:
+  #     - source: .tmp/goharbor-harbor-core-v2.13.5.tar
+  #       target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-core-v2.13.5.tar
+  #     - source: .tmp/goharbor-harbor-jobservice-v2.13.5.tar
+  #       target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-jobservice-v2.13.5.tar
+  #     - source: .tmp/goharbor-harbor-portal-v2.13.5.tar
+  #       target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-portal-v2.13.5.tar
+  #     - source: .tmp/goharbor-harbor-registryctl-v2.13.5.tar
+  #       target: /var/lib/rancher/rke2/agent/images/goharbor-harbor-registryctl-v2.13.5.tar
+  #     - source: .tmp/goharbor-redis-photon-v2.13.5.tar
+  #       target: /var/lib/rancher/rke2/agent/images/goharbor-redis-photon-v2.13.5.tar
+  #     - source: .tmp/goharbor-registry-photon-v2.13.5.tar
+  #       target: /var/lib/rancher/rke2/agent/images/goharbor-registry-photon-v2.13.5.tar
   
-  - name: rke2-helm-harbor
-    actions:
-      onCreate:
-        before:
-          - cmd: scripts/harbor/helm_before.sh
-        after:
-          - cmd: rm -rf .tmp
-    files:
-      - source: .tmp/rke2-helm-harbor.yaml
-        target: /var/lib/rancher/rke2/server/manifests/rke2-helm-harbor.yaml
+  # - name: rke2-helm-harbor
+  #   actions:
+  #     onCreate:
+  #       before:
+  #         - cmd: scripts/harbor/helm_before.sh
+  #       # after:
+  #       #   - cmd: rm -rf .tmp
+  #   files:
+  #     - source: .tmp/rke2-helm-harbor.yaml
+  #       target: /var/lib/rancher/rke2/server/manifests/rke2-helm-harbor.yaml
+  #     - source: manifests/zarf-connect-harbor.yaml
+  #       target: /var/lib/rancher/rke2/server/manifests/zarf-connect-harbor.yaml
   
   - name: harbor-helm
     charts:
       - name: harbor
-        version: 1.3.2
+        version: 1.17.5  # HARBOR_CHART_VERSION
         namespace: harbor
         url: https://helm.goharbor.io
         valuesFiles:
           - values-harbor.yaml
     # for `zarf dev find-images`
-    # images:
-    #   - busybox:latest
-    #   - goharbor/chartmuseum-photon:v1.10.2
-    #   - goharbor/clair-adapter-photon:v1.10.2
-    #   - goharbor/clair-photon:v1.10.2
-    #   - goharbor/harbor-core:v1.10.2
-    #   - goharbor/harbor-db:v1.10.2
-    #   - goharbor/harbor-jobservice:v1.10.2
-    #   - goharbor/harbor-portal:v1.10.2
-    #   - goharbor/harbor-registryctl:v1.10.2
-    #   - goharbor/notary-server-photon:v1.10.2
-    #   - goharbor/notary-signer-photon:v1.10.2
-    #   - goharbor/redis-photon:v1.10.2
-    #   - goharbor/registry-photon:v1.10.2
+    images:
+      - goharbor/harbor-core:v2.13.5
+      - goharbor/harbor-db:v2.13.5
+      - goharbor/harbor-jobservice:v2.13.5
+      - goharbor/harbor-portal:v2.13.5
+      - goharbor/harbor-registryctl:v2.13.5
+      - goharbor/redis-photon:v2.13.5
+      - goharbor/registry-photon:v2.13.5

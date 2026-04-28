@@ -1,11 +1,67 @@
-helperImage:
-  repository: busybox
-  tag: 1.36
+expose:
+  type: ingress
+  tls:
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: "harbor-tls-secret" # 사내 인증서로 생성할 시크릿 이름
+  ingress:
+    hosts:
+      core: ###ZARF_VAR_HARBOR_DOMAIN###
+    controller: default
+    className: nginx
+  # NodePort 정보 (Ingress와 함께 서비스 노출을 위해 추가)
+  nodePort:
+    name: harbor-nodeport
+    ports:
+      http:
+        port: 80
+        nodePort: 30080
+      https:
+        port: 443
+        nodePort: 30443
 
-nodePathMap:
-  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
-    paths:
-      - ###ZARF_VAR_DEFAULT_PATH_FOR_NON_LISTED_NODES###
+# 2. 이미지 저장소 (S3 사용)
+persistence:
+  enabled: true
+  imageChartStorage:
+    # type: s3
+    type: filesystem
+    s3:
+      region: us-east-1 # S3 호환 스토리지의 경우 임의 값 입력 가능
+      bucket: ###ZARF_VAR_S3_BUCKET###
+      accesskey: ###ZARF_VAR_S3_ACCESS_KEY###
+      secretkey: ###ZARF_VAR_S3_SECRET_KEY###
+      endpoint: ###ZARF_VAR_S3_ENDPOINT###
 
-storageClass:
-  reclaimPolicy: Retain
+# 3. 데이터 저장소 (별도 StorageClass 사용)
+  persistentVolumeClaim:
+    registry:
+      storageClass: "###ZARF_VAR_STORAGE_CLASS###"
+      size: 100Gi
+    jobservice:
+      storageClass: "###ZARF_VAR_STORAGE_CLASS###"
+    database:
+      storageClass: "###ZARF_VAR_STORAGE_CLASS###"
+    redis:
+      storageClass: "###ZARF_VAR_STORAGE_CLASS###"
+
+# 4. 외부 DB 미사용 및 클러스터 내부 HA Postgres 연동
+# (Harbor 차트 자체 DB를 끄고 별도로 설치된 HA PG 서비스에 연결)
+database:
+  # type: external
+  type: internal
+  external:
+    host: "###ZARF_VAR_DB_HOST###"
+    port: 5432
+    username: "postgres"
+    password: "###ZARF_VAR_DB_PASSWORD###"
+    coreDatabase: "registry"
+
+# 5. 스캐너 비활성화
+trivy:
+  enabled: false
+
+# 기타: 외부 서비스 미사용 (Redis는 내부 컨테이너 사용 가정)
+redis:
+  type: internal
