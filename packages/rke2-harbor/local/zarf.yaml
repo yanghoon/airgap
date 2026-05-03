@@ -1,0 +1,75 @@
+apiVersion: zarf.dev/v1alpha1
+kind: ZarfPackageConfig
+metadata:
+  name: rke2-harbor
+  description: ""
+  version: v0.0.1
+
+variables:
+  - name: HARBOR_DOMAIN
+    description: Harbor 접속 도메인
+    default: harbor.local
+    prompt: true
+
+  - name: STORAGE_CLASS
+    description: 데이터 저장에 사용할 StorageClass 명칭
+    default: standard
+    prompt: true
+
+  - name: S3_ENDPOINT
+    description: "S3 엔드포인트 URL (예: s3.amazonaws.com 또는 minio-svc)"
+    prompt: true
+
+  - name: S3_BUCKET
+    description: "Harbor 이미지를 저장할 S3 버킷 명칭"
+    prompt: true
+
+  - name: S3_ACCESS_KEY
+    description: S3 Access Key
+    prompt: true
+
+  - name: S3_SECRET_KEY
+    description: S3 Secret Key
+    prompt: true
+
+  - name: DB_HOST
+    description: 클러스터 내부 Database 서비스 주소
+    default: postgresql.harbor.svc
+    prompt: true
+
+  - name: DB_PASSWORD
+    description: Postgres 'postgres' 유저 패스워드
+    default: harbor
+    prompt: true
+
+components:
+
+  - name: harbor-helm
+    charts:
+      - name: harbor
+        version: 1.17.5 # HARBOR_CHART_VERSION
+        namespace: harbor
+        url: https://helm.goharbor.io
+        valuesFiles:
+          - ../values-harbor.yaml
+    # for `zarf dev find-images`
+    images:
+      - goharbor/harbor-core:v2.13.5
+      - goharbor/harbor-db:v2.13.5
+      - goharbor/harbor-jobservice:v2.13.5
+      - goharbor/harbor-portal:v2.13.5
+      - goharbor/harbor-registryctl:v2.13.5
+      - goharbor/redis-photon:v2.13.5
+      - goharbor/registry-photon:v2.13.5
+
+  - name: rke2-nginx-ingress-helm
+    charts:
+      - url: https://rke2-charts.rancher.io/
+        name: rke2-ingress-nginx
+        version: 4.14.503
+        namespace: airgap-system
+        valuesFiles:
+          - values-rke2-nginx-ingress.yaml
+    images:
+      - rancher/kube-webhook-certgen:v1.14.5-hardened1
+      - rancher/nginx-ingress-controller:v1.14.5-hardened1

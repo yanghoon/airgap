@@ -1,7 +1,9 @@
+externalURL: https://###ZARF_VAR_HARBOR_DOMAIN###
+
 expose:
   type: ingress
   tls:
-    enabled: true
+    enabled: false
     certSource: secret
     secret:
       secretName: "harbor-tls-secret" # 사내 인증서로 생성할 시크릿 이름
@@ -38,9 +40,10 @@ persistence:
   persistentVolumeClaim:
     registry:
       storageClass: "###ZARF_VAR_STORAGE_CLASS###"
-      size: 100Gi
+      size: 1Gi
     jobservice:
-      storageClass: "###ZARF_VAR_STORAGE_CLASS###"
+      jobLog:
+        storageClass: "###ZARF_VAR_STORAGE_CLASS###"
     database:
       storageClass: "###ZARF_VAR_STORAGE_CLASS###"
     redis:
