@@ -48,7 +48,7 @@ spec:
         type: persistent-claim
         size: 1Gi
         # kafkaMetadata: shared
-        # class: standard
+        class: "###ZARF_VAR_STORAGE_CLASS###"
         deleteClaim: false
 ---
 apiVersion: kafka.strimzi.io/v1

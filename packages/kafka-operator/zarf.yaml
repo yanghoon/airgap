@@ -4,12 +4,10 @@ metadata:
   version: 0.0.1
 
 variables:
-  - name: KAFKA_0_PV_PATH
-    description: The local path on the node for the Kafka PV
-    default: /mnt/data/local-pv/kafka-0
-  - name: KAFKA_0_NODE_NAME
-    description: The name of the node where the Kafka PV will be created
-    default: node1
+  - name: STORAGE_CLASS
+    # description:  #TODO
+    default: standard
+    prompt: true
 
 components:
   - name: strimzi-kafka-operator

@@ -1,4 +1,5 @@
-# https://ui.docs.kafbat.io/configuration/helm-chars/quick-start
+# https://ui.docs.kafbat.io/configuration/helm-charts/quick-start
+# https://artifacthub.io/packages/helm/kafka-ui/kafka-ui
 yamlApplicationConfig:
   auth:
     type: disabled
@@ -13,3 +14,11 @@ yamlApplicationConfig:
 
 service:
   type: NodePort
+
+ingress:
+  enabled: true
+  host: kafka-ui.local
+  # ingressClassName: nginx
+  # tls:
+  #   enabled: false
+  #   secretName: kafka-ui-tls
