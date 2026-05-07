@@ -39,3 +39,20 @@ zarf connect rancher --local-port 8443
 curl -u "zarf-pull:$(zarf tools get-creds registry-readonly)" localhost:51351/v2/_catalog
 curl -u "zarf-pull:$(zarf tools get-creds registry-readonly)" localhost:51351/v2/bitnami/postgresql/tags/list
 ```
+
+### Zarf Command with Registry
+
+```bash
+# ZARF_REGISTRY
+# ZARF_REGISTRY_AUTH_PUSH
+zarf tools registry login harbor.local --interactive #--insecure
+
+# zarf tools registry catalog  # zarf-docker-registry
+# zarf tools registry catalog harbor.local --insecure  # Unauthorized 401
+
+# Prepare: create harbor project (ex. strmizi for query.io/strimzi/kafka-bridge:latest)
+zarf package mirror-resources zarf-package-xxx.tar.zst \
+  --images \
+  --registry-url harbor.local --registry-push-username admin --registry-push-password xxxx
+#   --insecure-skip-tls-verify
+```

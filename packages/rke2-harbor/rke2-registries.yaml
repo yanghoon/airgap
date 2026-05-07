@@ -1,0 +1,4 @@
+configs:
+  ###ZARF_HAROBR_DOMAIN###: # Change to your domain name
+    tls:
+      insecure-skip-verify: true
