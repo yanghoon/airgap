@@ -28,7 +28,7 @@ spec:
             - name: CATALOG_JDBC_PASSWORD
               value: ###ZARF_VAR_ICEBERG_PG_PASSWORD###
             - name: CATALOG_WAREHOUSE
-              value: s3a://###ZARF_VAR_ICEBERG_S3_BUCKET###/warehouse
+              value: s3a://###ZARF_VAR_ICEBERG_S3_BUCKET###/###ZARF_VAR_ICEBERG_S3_PATH###
             - name: CATALOG_IO__IMPL
               value: org.apache.iceberg.aws.s3.S3FileIO
             - name: CATALOG_S3_ENDPOINT
@@ -51,3 +51,21 @@ spec:
       targetPort: 8181
   selector:
     app: iceberg-rest
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iceberg-rest
+  namespace: iceberg-system
+spec:
+  rules:
+    - host: iceberg-rest.local
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: iceberg-rest
+              port:
+                number: 8181

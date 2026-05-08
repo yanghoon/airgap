@@ -27,6 +27,10 @@ variables:
   - name: ICEBERG_S3_BUCKET
     default: "datalake"
     prompt: true
+  
+  - name: ICEBERG_S3_PATH
+    default: warehouse
+    prompt: true
 
   # Database Configuration
   - name: ICEBERG_PG_USER
