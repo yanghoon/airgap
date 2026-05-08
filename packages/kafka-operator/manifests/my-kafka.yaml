@@ -71,15 +71,36 @@ spec:
         tls: true
       - name: external
         port: 9094
-        type: nodeport
-        tls: false
-    
+        # type: nodeport
+        # tls: false
+        type: ingress
+        tls: true
+        configuration:
+          bootstrap:
+            host: my-cluster.kafka.local
+          brokers:
+            - broker: 0
+              host: broker-0.my-cluster.kafka.local
+            - broker: 1
+              host: broker-1.my-cluster.kafka.local
+            - broker: 2
+              host: broker-2.my-cluster.kafka.local
+
     config:
       offsets.topic.replication.factor: 1
       transaction.state.log.replication.factor: 1
       transaction.state.log.min.isr: 1
       default.replication.factor: 1
       min.insync.replicas: 1
+    
+    # logging:
+    #   type: inline
+    #   loggers:
+    #     kafka.root.logger.level: INFO
+    #     kafka.network.Processor: TRACE
+    #     kafka.network.RequestChannel$: TRACE
+    #     kafka.server.KafkaApis: TRACE
+
   entityOperator:
     topicOperator: {}
     userOperator: {}

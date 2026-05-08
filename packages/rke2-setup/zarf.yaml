@@ -46,3 +46,8 @@ components:
         gitPath: deploy/chart/local-path-provisioner
         valuesFiles:
           - values-local-path-provisioner.yaml
+  
+  - name: rke2-helmconfig-ingress-nginx
+    files:
+      - source: rke2-helmconfig-ingress-nginx.yaml
+        target: /var/lib/rancher/rke2/server/manifests/rke2-helmconfig-ingress-nginx.yaml

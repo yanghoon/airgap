@@ -1,0 +1,21 @@
+# - rke2-ingress-nginx (helm chart)
+# https://artifacthub.io/packages/helm/rke2-charts/rke2-ingress-nginx
+# 
+# - Kafka
+# https://ranchergovernment.com/blog/leveraging-rke2-with-tls-passthrough
+# https://strimzi.io/blog/2019/05/23/accessing-kafka-part-5/
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    controller:
+      config:
+        use-forwarded-headers: true
+      extraArgs:
+        # for ingress type of kafka external
+        enable-ssl-passthrough: true
+        # log level
+        v: 4
