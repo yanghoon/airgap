@@ -4,10 +4,12 @@ metadata:
   description: "Trino 480 w/ Iceberg REST Catalog (Air-gap)"
   version: "1.42.1"
 
-variables:
+constants:
   - name: TRINO_NAMESPACE
     description: "Trino 배포 네임스페이스"
-    default: "trino"
+    value: "trino"
+
+variables:
   - name: ICEBERG_REST_URI
     description: "Iceberg REST Catalog URL"
     default: "http://iceberg-rest.iceberg-system:8181"
@@ -28,13 +30,6 @@ variables:
     default: "minioadmin"
 
 components:
-  # - name: trino-base
-  #   required: true
-  #   manifests:
-  #     - name: namespace
-  #       files:
-  #         - manifests/ns.yaml
-
   - name: trino-cluster
     required: true
     description: "Trino Engine (v480) & Helm (v1.42.1)"
@@ -43,9 +38,24 @@ components:
         releaseName: trino
         url: https://trinodb.github.io/charts
         version: 1.42.1
-        # namespace: ###ZARF_VAR_TRINO_NAMESPACE###
         namespace: trino
         valuesFiles:
           - values-trino.yaml
     images:
-      - trinodb/trino:480 # 최신 Trino 이미지
+      - trinodb/trino:480
+      - kiwigrid/k8s-sidecar:1.25.2
+
+  - name: trino-sidecar-rolebinding
+    required: true
+    description: "RoleBinding for Trino Sidecar Container"
+    manifests:
+      - name: trino-sidecar-rolebinding
+        files:
+          - manifests/trino-sidecar-rolebinding.yaml
+
+  - name: trino-catalog-iceberg
+    description: "Trino Catalog ConfigMap for Iceberg"
+    manifests:
+      - name: trino-catalog-iceberg
+        files:
+          - manifests/trino-catalog-cm-iceberg.yaml
