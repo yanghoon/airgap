@@ -32,6 +32,10 @@ variables:
     default: warehouse
     prompt: true
 
+  - name: ICEBERG_S3_REGION
+    default: us-east-1
+    prompt: true
+
   # Database Configuration
   - name: ICEBERG_PG_USER
     default: "iceberg_admin"

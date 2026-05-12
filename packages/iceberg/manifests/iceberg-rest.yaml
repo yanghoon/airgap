@@ -39,6 +39,8 @@ spec:
               value: ###ZARF_VAR_ICEBERG_S3_SECRET_KEY###
             - name: CATALOG_S3_PATH__STYLE__ACCESS
               value: "true"
+            - name: AWS_REGION
+              value: ###ZARF_VAR_ICEBERG_S3_REGION###
 ---
 apiVersion: v1
 kind: Service
