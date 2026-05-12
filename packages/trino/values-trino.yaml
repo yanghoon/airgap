@@ -19,7 +19,13 @@ server:
     http-server.process-forwarded=true
     catalog.management=dynamic
     catalog.store=file
-    # catalog.config-dir=/etc/trino/catalog-dynamic
+  workerExtraConfig: |
+    catalog.management=dynamic
+
+additionalLogProperties:
+  - org.apache.iceberg=DEBUG
+  - com.amazonaws=DEBUG
+  - io.trino.server.PluginManager=WARN
 
 coordinator:
   jvm:

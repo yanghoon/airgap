@@ -16,7 +16,9 @@ data:
     connector.name=iceberg
     iceberg.catalog.type=rest
     iceberg.rest-catalog.uri=###ZARF_VAR_ICEBERG_REST_URI###
-    iceberg.rest-catalog.warehouse=s3://###ZARF_VAR_S3_HOST###/###ZARF_VAR_S3_BUCKET###/warehouse
+    # iceberg.rest-catalog.warehouse=s3://###ZARF_VAR_S3_HOST###/###ZARF_VAR_S3_BUCKET###/warehouse
+
+    iceberg.allowed-extra-properties=*
 
     # Native S3 성능 가속화
     fs.native-s3.enabled=true
