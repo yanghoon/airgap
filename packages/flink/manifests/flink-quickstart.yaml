@@ -1,0 +1,30 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-quickstart
+  namespace: default
+spec:
+  image: flink:1.20
+  flinkVersion: v1_20
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "2"
+    parallelism.default: "2"
+  serviceAccount: flink-service-account
+  jobManager:
+    resource:
+      memory: "1024m"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "1024m"
+      cpu: 1
+  job:
+    jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
+    entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
+    args:
+      - "--input"
+      - "/opt/flink/examples/streaming/statemachine/event-data"
+    parallelism: 2
+    upgradeMode: savepoint
+    state: running
+    savepointTriggerNonce: 0

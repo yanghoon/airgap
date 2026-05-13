@@ -1,0 +1,27 @@
+kind: ZarfPackageConfig
+metadata:
+  name: flink
+  version: 0.0.1
+
+components:
+  - name: flink-kubernetes-operator
+    required: true
+    charts:
+      - name: flink-kubernetes-operator
+        url: https://downloads.apache.org/flink/flink-kubernetes-operator-1.14.0/
+        version: 1.14.0
+        namespace: flink-operator
+        valuesFiles:
+          - values-flink-operator.yaml
+    images:
+      - apache/flink-kubernetes-operator:1.15.0
+
+  - name: flink-quickstart
+    required: false
+    manifests:
+      - name: flink-quickstart
+        namespace: default
+        files:
+          - manifests/flink-quickstart.yaml
+    images:
+      - flink:1.20

@@ -1,0 +1,74 @@
+# Default values for flink-kubernetes-operator
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: apache/flink-kubernetes-operator
+  pullPolicy: IfNotPresent
+  tag: "1.15.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+webhook:
+  # webhook configuration
+  create: true
+  # port: 9443
+
+metrics:
+  # prometheus metrics enabled
+  enabled: true
+  # port: 9249
+
+flinkConfiguration:
+  # Flink configuration
+  parallelism.default: "1"
+
+logConfiguration:
+  # Log configuration
+  log4j-console: |
+    rootLogger.level = INFO
+    rootLogger.appenderRef.console.ref = ConsoleAppender
+    appender.console.name = ConsoleAppender
+    appender.console.type = Console
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
