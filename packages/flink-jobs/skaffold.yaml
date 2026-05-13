@@ -1,0 +1,13 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+
+build:
+  artifacts:
+    - image: flink-counter-job
+      docker:
+        dockerfile: Dockerfile
+
+deploy:
+  kubectl:
+    manifests:
+      - manifests/*.yaml

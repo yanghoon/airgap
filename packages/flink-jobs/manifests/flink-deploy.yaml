@@ -1,0 +1,27 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: counter-job
+  namespace: default
+spec:
+  image: flink-counter-job:fae18fe
+  flinkVersion: v1_20
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: "2"
+    parallelism.default: "2"
+  serviceAccount: flink-service-account
+  jobManager:
+    resource:
+      memory: "1024m"
+      cpu: 1
+    replicas: 1
+  taskManager:
+    resource:
+      memory: "1024m"
+      cpu: 1
+    replicas: 1
+  job:
+    jarURI: local:///opt/flink/lib/flink-jobs.jar
+    entryClass: com.airgap.flink.CounterJob
+    state: running
+    savepointNonce: 0
