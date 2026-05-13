@@ -1,6 +1,7 @@
 ## Prompt
 Crate zarf.yaml file with @SPEC.md
 Until zarf package create is success
+Until zarf package deploy is success
 
 ## Spec
 - zarf packaging with `zarf.yaml`

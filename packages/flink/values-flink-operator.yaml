@@ -51,7 +51,7 @@ affinity: {}
 
 webhook:
   # webhook configuration
-  create: true
+  create: false
   # port: 9443
 
 metrics:
