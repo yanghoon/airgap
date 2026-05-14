@@ -20,8 +20,9 @@ components:
     required: false
     manifests:
       - name: flink-quickstart
-        namespace: default
+        namespace: flink-job
         files:
+          - manifests/flink-sa.yaml
           - manifests/flink-quickstart.yaml
     images:
-      - flink:1.20
+      - flink:2.2

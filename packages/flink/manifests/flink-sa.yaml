@@ -1,0 +1,46 @@
+# https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-release-1.15/docs/operations/rbac/
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: flink-kubernetes-operator
+    app.kubernetes.io/version: 1.0.1
+  name: flink
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/name: flink-kubernetes-operator
+    app.kubernetes.io/version: 1.0.1
+  name: flink
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - configmaps
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - deployments/finalizers
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: flink-kubernetes-operator
+    app.kubernetes.io/version: 1.0.1
+  name: flink-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flink
+subjects:
+- kind: ServiceAccount
+  name: flink
