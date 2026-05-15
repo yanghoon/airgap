@@ -56,3 +56,12 @@ zarf package mirror-resources zarf-package-xxx.tar.zst \
   --registry-url harbor.local --registry-push-username admin --registry-push-password xxxx
 #   --insecure-skip-tls-verify
 ```
+
+## Skaffold
+
+### Docker Build
+
+```bash
+skaffold build  --dry-run
+skaffold render --digest-source=local
+```

@@ -4,24 +4,24 @@ metadata:
   name: counter-job
   namespace: default
 spec:
-  image: flink-counter-job:fae18fe
+  image: counter-job
   flinkVersion: v1_20
   flinkConfiguration:
-    taskmanager.numberOfTaskSlots: "2"
-    parallelism.default: "2"
-  serviceAccount: flink-service-account
+    taskmanager.numberOfTaskSlots: 1
+    parallelism.default: 1
+  serviceAccount: flink
   jobManager:
-    resource:
-      memory: "1024m"
-      cpu: 1
     replicas: 1
+    resource:
+      cpu: 1
+      memory: 1024m
   taskManager:
-    resource:
-      memory: "1024m"
-      cpu: 1
     replicas: 1
+    resource:
+      cpu: 1
+      memory: 1024m
   job:
-    jarURI: local:///opt/flink/lib/flink-jobs.jar
+    jarURI: local:///opt/flink/lib/counter-jobs.jar
     entryClass: com.airgap.flink.CounterJob
     state: running
     savepointNonce: 0

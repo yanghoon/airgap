@@ -1,0 +1,32 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: counter-job
+
+build:
+  local:
+    push: false
+  tagPolicy:
+    gitCommit:  # git describe --tags --always
+  artifacts:
+    - image: counter-job
+      context: ..
+      docker:
+        dockerfile: counter-job/Dockerfile
+      # hooks:
+      #   before:
+      #     - command: ["./gradlew", ":counter-job:clean", ":counter-job:build"]
+
+manifests:
+  rawYaml:
+    - manifests/*.yaml
+
+resourceSelector:
+  allow:
+    - groupKind: FlinkDeployment.flink.apache.org
+      image: [".*"]
+
+# deploy:
+#   kubectl:
+#     manifests:
+#       - manifests/*.yaml

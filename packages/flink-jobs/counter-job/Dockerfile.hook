@@ -1,0 +1,4 @@
+FROM flink:1.20
+
+RUN mkdir opt/flink/usrlib
+COPY ./sample/build/libs/sample-*-all.jar /opt/flink/usrlib/sample.jar
