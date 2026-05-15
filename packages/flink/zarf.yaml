@@ -13,6 +13,11 @@ components:
         namespace: flink-operator
         valuesFiles:
           - values-flink-operator.yaml
+    manifests:
+      - name: flink-sa
+        namespace: flink-job
+        files:
+          - manifests/flink-sa.yaml
     images:
       - apache/flink-kubernetes-operator:1.14.0
 
@@ -22,7 +27,7 @@ components:
       - name: flink-quickstart
         namespace: flink-job
         files:
-          - manifests/flink-sa.yaml
+          # - manifests/flink-sa.yaml
           - manifests/flink-quickstart.yaml
     images:
       - flink:2.2
