@@ -7,3 +7,5 @@ zarf-package-*.*
 
 build
 .gradle
+
+.env

@@ -1,0 +1,21 @@
+services:
+  jobmanager:
+    image: ${FLINK_IMAGE:?FLINK_IMAGE requied(.env)}
+    # command: standalone-job --job-classname com.airgap.flink.CounterJob
+    # command: java --version
+    command: standalone-job --job-classname ${MAIN_CLASS:?MAIN_CLASS required(.env)}
+    ports:
+      - 8081:8081  # Flink Web UI Port
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: jobmanager
+        parallelism.default: 1
+  
+  taskmanager:
+    image: ${FLINK_IMAGE:?FLINK_IMAGE requied(.env)}
+    command: taskmanager
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: jobmanager
+        parallelism.default: 1
+        jobmanager.numberOfTaskSlots: 1
