@@ -2,7 +2,7 @@ apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
   name: counter-job
-  namespace: default
+  namespace: flink-job
 spec:
   image: counter-job
   flinkVersion: v1_20
@@ -21,7 +21,6 @@ spec:
       cpu: 1
       memory: 1024m
   job:
-    jarURI: local:///opt/flink/lib/counter-jobs.jar
+    jarURI: local:///opt/flink/usrlib/counter-jobs.jar
     entryClass: com.airgap.flink.CounterJob
     state: running
-    savepointNonce: 0
