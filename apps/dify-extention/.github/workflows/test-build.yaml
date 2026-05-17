@@ -1,0 +1,48 @@
+name: Automated Internal Test Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-test-zip:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Inject Dynamic Test Version
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.version = '0.0.0-test.${{ github.run_number }}';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          "
+
+      - name: Pack Extension via WXT
+        run: npx wxt zip
+
+      - name: Update Latest Test Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ZIP_PATH=$(ls .output/*.zip | head -n 1)
+          gh release create latest-test \
+            --prerelease \
+            --title "🧪 내부 테스트용 최신 빌드" \
+            --notes "Main 브랜치 자동 빌드본입니다. 테스트 진행 시 이 버전을 설치하세요." \
+            || true
+          gh release upload latest-test "$ZIP_PATH" --clobber

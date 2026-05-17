@@ -4,3 +4,9 @@ packages/*/helm*/**
 zarf-package-*.*
 
 .tmp
+
+node_modules
+.output
+.wxt
+dist
+build
