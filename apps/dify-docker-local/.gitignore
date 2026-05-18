@@ -1,0 +1,8 @@
+# Common
+docker/
+.env
+
+# Plugins
+# plugins/
+# *.difypkg
+*.tar.gz

@@ -13,7 +13,7 @@
         "base_url": "https://openrouter.ai/api/v1",
         "default_request_timeout_in_seconds": 120,
         "extra_headers": {
-          "HTTP-Referer": "https://bifrost-gateway",
+          "HTTP-Referer": "https://bifrost-gateway.local",
           "X-Title": "Bifrost AI Gateway"
         }
       },
@@ -31,6 +31,10 @@
           "speech_stream": false,
           "transcription": false,
           "transcription_stream": false
+        },
+        "request_path_overrides": {
+          "chat_completion": "/chat/completions",
+          "chat_completion_stream": "/chat/completions"
         }
       }
     },
