@@ -65,3 +65,20 @@ zarf package mirror-resources zarf-package-xxx.tar.zst \
 skaffold build  --dry-run
 skaffold render --digest-source=local
 ```
+
+```bash
+skaffold config set default-repo harbor.local/flink-jobs
+skaffold config set insecure-registries harbor.local
+skaffold config list
+```
+
+### Podman Build
+
+```toml
+# ~/.config/containers/registries.conf
+unqualified-search-registries = ["docker.io"]
+
+[[registry]]
+location = "harbor.local"
+insecure = true
+```

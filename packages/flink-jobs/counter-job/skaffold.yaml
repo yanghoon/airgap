@@ -4,8 +4,8 @@ metadata:
   name: counter-job
 
 build:
-  local:
-    push: false
+  # local:
+  #   push: false
   tagPolicy:
     gitCommit:  # git describe --tags --always
   artifacts:
