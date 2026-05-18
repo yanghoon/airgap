@@ -1,0 +1,78 @@
+{
+  "providers": {
+    "openrouter": {
+      "keys": [
+        {
+          "name": "openrouter-key-1",
+          "value": "env.OPENROUTER_API_KEY",
+          "models": ["*"],
+          "weight": 1.0
+        }
+      ],
+      "network_config": {
+        "base_url": "https://openrouter.ai/api/v1",
+        "default_request_timeout_in_seconds": 120,
+        "extra_headers": {
+          "HTTP-Referer": "https://bifrost-gateway",
+          "X-Title": "Bifrost AI Gateway"
+        }
+      },
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+          "chat_completion": true,
+          "chat_completion_stream": true,
+          "embedding": false,
+          "text_completion": false,
+          "text_completion_stream": false,
+          "responses": false,
+          "responses_stream": false,
+          "speech": false,
+          "speech_stream": false,
+          "transcription": false,
+          "transcription_stream": false
+        }
+      }
+    },
+    "company-llm": {
+      "keys": [
+        {
+          "name": "company-llm-key-1",
+          "value": "env.COMPANY_LLM_API_KEY",
+          "models": ["*"],
+          "weight": 1.0
+        }
+      ],
+      "network_config": {
+        "base_url": "https://api.company-internal.ai/v1",
+        "default_request_timeout_in_seconds": 120,
+        "extra_headers": {
+          "Authorization": "Bearer ${COMPANY_LLM_API_KEY}",
+          "X-Company-Auth": "${COMPANY_AUTH_TOKEN}",
+          "X-Company-Team": "${COMPANY_TEAM_ID}"
+        }
+      },
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+          "chat_completion": true,
+          "chat_completion_stream": true,
+          "embedding": true,
+          "text_completion": false,
+          "text_completion_stream": false,
+          "responses": false,
+          "responses_stream": false,
+          "speech": false,
+          "speech_stream": false,
+          "transcription": false,
+          "transcription_stream": false
+        },
+        "request_path_overrides": {
+          "chat_completion": "/chat/completions",
+          "chat_completion_stream": "/chat/completions",
+          "embedding": "/embeddings"
+        }
+      }
+    }
+  }
+}
