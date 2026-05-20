@@ -25,8 +25,8 @@ export default defineConfig({
     //     '--auto-open-devtools-for-tabs'
     //   ],
     // }
-    logger: {
-      debug: true
-    },
+    // logger: {
+    //   debug: true
+    // },
   }
 })

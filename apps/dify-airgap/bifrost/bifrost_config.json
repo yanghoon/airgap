@@ -1,0 +1,23 @@
+{
+    "$schema": "https://www.getbifrost.ai/schema",
+    "provider": {
+        "ollama": {
+            "keys": [
+                {
+                    "name": "ollama_api_key",
+                    "value": "dummy-api-key",
+                    "models": ["gpt-oss-120b"],
+                    "weights": 1.0
+                }
+            ],
+            "network_config": {
+                "base_url": "http://ollama:11434/v1/",
+                "extra_headers": {
+                    "content-type": "application/json",
+                    "accept": "text/event-stream; charset=utf-8",
+                    "x-api-key": "dummy-api-key"
+                }
+            }
+        }
+    }
+}

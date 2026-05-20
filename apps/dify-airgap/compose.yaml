@@ -1,0 +1,6 @@
+
+include:
+  - ./dify/docker-compose.yaml  # http://localhost:7080
+  - ./nginx/compose.yaml        # http://ai-proxy/v1
+  # - ./bifrost/compose.yaml      # http://ai-proxy/v1
+  # - ./litellm/compose.yaml      # http://ai-proxy/v1

@@ -1,0 +1,13 @@
+general_settings:
+  store_model_in_db: False
+
+model_list:
+  - model_name: gpt-oss-120b
+    litellm_params:
+      model: gpt-oss-120b
+      api_base: http://your-llm-service:port/v1
+      api_key: dummy-api-key
+      headers:
+        content-type: application/json
+        accept: text/event-stream; charset=utf-8
+        x-api-key: dummy-api-key
