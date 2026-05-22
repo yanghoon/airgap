@@ -1,4 +1,4 @@
-FROM flink:1.20
+FROM flink:1.20.4-java17
 
 RUN mkdir opt/flink/usrlib
-COPY ./sample/build/libs/sample-*-all.jar /opt/flink/usrlib/sample.jar
+COPY ./counter-job/build/libs/counter-job-*-all.jar /opt/flink/usrlib/counter-job.jar

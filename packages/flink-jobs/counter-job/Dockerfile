@@ -5,8 +5,8 @@ FROM gradle:8-jdk17-alpine AS builder
 WORKDIR /app
 
 # 1. 빌드 캐시 최적화: 설정 파일 및 래퍼 선복사
-COPY gradlew .
-COPY gradle gradle
+# COPY gradlew .
+# COPY gradle gradle
 COPY *.gradle.kts .
 COPY counter-job/*.gradle.kts counter-job/
 
