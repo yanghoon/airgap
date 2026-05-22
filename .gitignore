@@ -1,12 +1,17 @@
 rke2-ansible
 
+# Zarf
 packages/*/helm*/**
 zarf-package-*.*
 
 .tmp
 
+# Web Extension
 node_modules
 .output
 .wxt
 dist
 build
+
+# Docker Compose
+.env

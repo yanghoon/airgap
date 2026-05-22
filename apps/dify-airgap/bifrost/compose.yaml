@@ -1,11 +1,19 @@
 services:
   bifrost:
-    image: maximhq/bifrost:latest
+    image: maximhq/bifrost:v1.5.3
     ports:
       - 4000:8080
-    # environment:
+    environment:
+      - CUSTOM_PROVIDER_URL=${CUSTOM_PROVIDER_URL}
+      - CUSTOM_PROVIDER_API_KEY=${CUSTOM_PROVIDER_API_KEY}
+      - CUSTOM_PROVIDER_HEADERS_API_KEY=${CUSTOM_PROVIDER_HEADERS_API_KEY}
     #   - BIFROST_PORT=7081
     #   - BIFROST_LOG_LEVEL=info
     #   - BIFROST_MODEL_DIR=/models
     volumes:
       - ./bifrost_config.json:/app/data/config.json:ro
+
+  bifrost-mirror:
+    image: nginx:alpine
+    volumes:
+      - ./datasheet:/usr/share/nginx/html:ro

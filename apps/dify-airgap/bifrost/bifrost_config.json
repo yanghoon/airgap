@@ -1,23 +1,49 @@
 {
-    "$schema": "https://www.getbifrost.ai/schema",
-    "providers": {
-        "ollama": {
-            "keys": [
-                {
-                    "name": "ollama_api_key",
-                    "value": "dummy-api-key",
-                    "models": ["gpt-oss-120b"],
-                    "weights": 1.0
-                }
-            ],
-            "network_config": {
-                "base_url": "http://ollama:11434/v1/",
-                "extra_headers": {
-                    "content-type": "application/json",
-                    "accept": "text/event-stream; charset=utf-8",
-                    "x-api-key": "dummy-api-key"
-                }
-            }
-        }
+  "$schema": "https://www.getbifrost.ai/schema",
+  "framework": {
+    "pricing": {
+      "pricing_url": "http://bifrost-mirror/pricing.json",
+      "model_parameters_url": "http://bifrost-mirror/model_parameters.json"
     }
+  },
+  "providers": {
+    "custom": {
+      "send_back_raw_request": true,
+      "send_back_raw_response": true,
+      "store_raw_request_response": true,
+
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+            "list_models": false,
+            "text_completion": true,
+            "text_completion_stream": true,
+            "chat_completion": true,
+            "chat_completion_stream": true
+        }
+      },
+
+      "network_config": {
+        "base_url": "https://openrouter.ai/api/",
+        "extra_headers": {
+          "content-type": "application/json",
+          "accept": "text/event-stream; charset=utf-8",
+          "x-api-key": "env.CUSTOM_PROVIDER_HEADERS_API_KEY"
+        }
+      },
+
+      "keys": [
+        {
+          "name": "internal-key",
+          "value": "env.CUSTOM_PROVIDER_API_KEY",
+          "weight": 1,
+          "models": ["auto"],
+          "aliases": {
+            "auto": "openrouter/auto",
+            "gpt-oss-120b": "openai/gpt-oss-120b"
+          }
+        }
+      ]
+    }
+  }
 }
