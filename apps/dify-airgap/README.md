@@ -3,11 +3,14 @@
 ## Dify Docker Compose
 
 ```bash
-curl -L https://github.com/langgenius/dify/archive/refs/haeds/main.tar.gz -o dify.tar.gz
+curl -L https://github.com/langgenius/dify/archive/refs/heads/main.zip -o dify.zip
 
-mkdir -p dify
-tar -xzf dify.tar.gz --strip-components=2 -C dify "dify-main/docker"
-rm dify.tar.gz
+mkdir -p temp_dify
+unzip -q dify.zip -d temp_dify
+mv temp_dify/dify-main/docker ./dify
+
+rm -rf temp_dify
+rm dify.zip
 ```
 
 ### Configure

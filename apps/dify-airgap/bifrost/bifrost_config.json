@@ -44,6 +44,34 @@
           }
         }
       ]
+    },
+    "embedding": {
+      "send_back_raw_request": true,
+      "send_back_raw_response": true,
+      "store_raw_request_response": true,
+
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+            "embedding": true
+        }
+      },
+
+      "network_config": {
+        "base_url": "http://tei-embedding/"
+      },
+
+      "keys": [
+        {
+          "name": "embedding",
+          "value": "dummy-api-key",
+          "weight": 1,
+          "models": ["*"],
+          "aliases": {
+            "embedding/multilingual-e5-small": "intfloat/multilingual-e5-small"
+          }
+        }
+      ]
     }
   }
 }

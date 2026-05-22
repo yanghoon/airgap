@@ -17,3 +17,28 @@ services:
     image: nginx:alpine
     volumes:
       - ./datasheet:/usr/share/nginx/html:ro
+  
+  tei-embedding:
+    # depends_on:
+    #   - tei-embedding-init
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+    ports:
+      - 8000:80
+    volumes:
+      - ./models:/data
+    command: --model-id /data --dtype float32
+    # command: --model-id BAAI/bge-m3 --dtype float32
+    shm_size: 2gb
+    deploy:
+      resources:
+        limits:
+          memory: 4G  # 모델 로드 피크치를 감당하도록 최소 6GB 할당
+    # restart: always
+  
+  # hf download baai/bge-m3 --local-dir models
+  # tei-embedding-init:
+  #   image: ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+  #   command: --model-id BAAI/bge-m3 --dtype float32
+  #   shm_size: 1gb
+  #   volumes:
+  #     - ./models:/models
