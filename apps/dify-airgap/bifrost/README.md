@@ -40,3 +40,17 @@ bifrost
 #   - e : edit session
 #   - m : model
 ```
+
+## Text Embedding
+
+* https://huggingface.co/docs/huggingface_hub/guides/cli#getting-started
+
+```
+curl -LsSf https://hf.co/cli/install.sh | bash
+```
+
+```bash
+mkdir -p models
+# hf download intfloat/multilingual-e5-small --local-dir models
+# hf download baai/bge-m3 --local-dir models
+```
