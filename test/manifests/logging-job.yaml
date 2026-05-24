@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-env
+data:
+  TEST_NAME: Kafka_Availability_Test
+  TOTAL_COUNT: "20"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-scripts
+data:
+  logger.sh: |
+    #!/bin/sh
+    LOG_FILE="/var/log/app/test.log"
+    echo "Test: $TEST_NAME, Count: $TOTAL_COUNT 시작"
+    for i in $(seq 0 $TOTAL_COUNT); do
+        TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        echo "$TIMESTAMP | $TEST_NAME | SEQ=$(printf "%06d" $i)" >> "$LOG_FILE"
+        sleep 0.2
+    done
+  fluent-bit.yaml: |
+    service:
+      flush: 1
+      log_level: debug
+    pipeline:
+      inputs:
+        - name: tail
+          path: /var/log/app/test.log
+          tag: test.log
+          mem_buf_limit: 5MB
+      outputs:
+        - name: stdout
+          match: test.log
+        - name: kafka
+          match: test.log
+          brokers: my-cluster-dual-role-0.my-cluster-kafka-brokers.kafka-operator.svc:9092
+          topics: test-topic
+          # queue_dir: /tmp/flb-kafka
+          rdkafka.log.connection.close: "false"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: log-test-job
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: script-volume
+          configMap:
+            name: test-scripts
+        - name: log-volume
+          emptyDir: {}
+      containers:
+        # 1. 로그 생성 메인 컨테이너
+        - name: logger
+          image: busybox:1.36
+          command: ["/bin/sh", "-c", "sh /config/logger.sh"]
+          # env:
+          #   - name: TEST_NAME
+          #     valueFrom:
+          #       configMapKeyRef: {name: test-env, key: TEST_NAME}
+          #   - name: TOTAL_COUNT
+          #     valueFrom:
+          #       configMapKeyRef: {name: test-env, key: TOTAL_COUNT}
+          envFrom:
+            - configMapRef:
+                name: test-env
+          volumeMounts:
+            - name: script-volume
+              mountPath: /config
+            - name: log-volume
+              mountPath: /var/log/app
+        # 2. Fluent Bit 사이드카 컨테이너
+        - name: fluentbit
+          image: fluent/fluent-bit:4.2.3
+          command: ["/fluent-bit/bin/fluent-bit", "-c", "/config/fluent-bit.yaml"]
+          volumeMounts:
+            - name: script-volume
+              mountPath: /config
+            - name: log-volume
+              mountPath: /var/log/app

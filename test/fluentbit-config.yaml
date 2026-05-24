@@ -1,0 +1,20 @@
+service:
+  flush: 1
+  log_level: info
+
+pipeline:
+  inputs:
+    - name: tail
+      path: /var/log/app/test.log
+      tag: test.log
+      mem_buf_limit: 5MB
+
+  outputs:
+    - name: stdout
+      match: test.log
+    - name: kafka
+      match: test.log
+      brokers: my-cluster-kafka-brokers.kafka.local:444
+      topics: test-topic
+      # queue_dir: /tmp/flb-kafka
+      rdkafka.log.connection.close: "false"

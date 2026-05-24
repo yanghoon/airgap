@@ -4,6 +4,7 @@ packages/*/helm*/**
 zarf-package-*.*
 
 .tmp
+logs/
 
 build
 .gradle
