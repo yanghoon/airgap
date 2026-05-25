@@ -10,3 +10,10 @@ build
 .gradle
 
 .env
+
+# Text Embeddings
+**/models/
+**/dify/
+
+# Agents
+.antigravitycli
