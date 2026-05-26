@@ -9,6 +9,10 @@ data:
   # KAFKA_BROKER: "kafka-service.namespace.svc.cluster.local:9092"
   KAFKA_BROKER: my-cluster-kafka-bootstrap.kafka-operator.svc.cluster.local:9092
   KAFKA_TOPIC: test-topic
+  # KAFKA_OPTS: >
+  #   -X security.protocol=SSL
+  #   -X ssl.enpoint.identification.algorithm=none -X enable.ssl.certificate.verification=0
+  #   -d all
   
   run.sh: |
     #!/bin/sh
@@ -31,7 +35,7 @@ data:
           echo "$TIMESTAMP | $TEST_NAME | SEQ=$(printf "%06d" $i)"
           sleep 0.2
       done
-    } | kcat -b $KAFKA_BROKER -t $KAFKA_TOPIC -P
+    } | kcat -b $KAFKA_BROKER -t $KAFKA_TOPIC -P $KAFKA_OPTS
 
     # kcat 종료 코드 및 종료 시간 측정
     KCAT_EXIT=$?

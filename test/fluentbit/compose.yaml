@@ -1,0 +1,17 @@
+services:
+  log-generator:
+    image: busybox:1.36
+    volumes:
+      - ./logs:/var/log/app
+    command: >
+      /bin/sh -c "while true; do 
+        echo \"$$(date -u +'%Y-%m-%dT%H:%M:%SZ') | LOCAL_TEST | SEQ=$$((i++))\" >> /var/log/app/test.log; 
+        sleep 0.2; 
+      done"
+
+  fluentbit:
+    image: fluent/fluent-bit:4.2.3
+    volumes:
+      - ./logs:/var/log/app
+      - ./config.yaml:/fluent-bit/etc/fluent-bit.yaml
+    command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.yaml
