@@ -10,6 +10,8 @@ dependencies {
     implementation(project(":starters:flink-kafka"))
 
     runtimeOnly(project(":starters:flink-logging"))
+    runtimeOnly(project(":starters:flink-core"))
+    runtimeOnly(project(":starters:flink-table"))
 }
 
 application {

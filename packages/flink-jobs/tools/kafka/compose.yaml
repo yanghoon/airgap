@@ -1,0 +1,35 @@
+services:
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda-ssl
+    ports:
+      - "443:8443"
+      - "29092:29092"
+    volumes:
+      - ./certs:/etc/redpanda/certs:ro
+    command:
+      - redpanda
+      - start
+      - --smp=1
+      - --memory=1G
+      - --reserve-memory=0M
+      - --overprovisioned
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:8443
+      - --advertise-kafka-addr=INTERNAL://redpanda:29092,EXTERNAL://localhost:443
+      # TLS 설정을 JSON 형식의 문자열로 주입 (작은따옴표 필수)
+      - --set
+      - 'redpanda.kafka_api_tls=[{"name":"EXTERNAL","enabled":true,"cert_file":"/etc/redpanda/certs/server.crt","key_file":"/etc/redpanda/certs/server.key"}]'
+
+  # Redpanda 웹 콘솔 추가
+  console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: redpanda-console
+    ports:
+      - "8080:8080" # 호스트에서 접속할 웹 UI 포트
+    environment:
+      # Docker 내부 네트워크를 이용해 Redpanda INTERNAL 리스너로 통신
+      - KAFKA_BROKERS=redpanda:29092
+    depends_on:
+      - redpanda

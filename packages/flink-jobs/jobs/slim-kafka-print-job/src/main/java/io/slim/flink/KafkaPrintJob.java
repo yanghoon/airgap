@@ -3,7 +3,7 @@ package io.slim.flink;
 import java.util.Optional;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.bridge.java.StreamingTableEnvironment;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,7 @@ public class KafkaPrintJob {
 
     public static void main(String[] args) {
         var env = StreamExecutionEnvironment.getExecutionEnvironment();
-        var tableEnv = StreamingTableEnvironment.create(env);
+        var tableEnv = StreamTableEnvironment.create(env);
 
         var sourceSql = """
             CREATE TABLE source (
@@ -28,7 +28,7 @@ public class KafkaPrintJob {
                 'properties.bootstrap.servers' = 'localhost:443',
                 'properties.security.protocol' = 'SSL',
                 'properties.ssl.truststore.type' = 'PEM',
-                'properties.ssl.truststore.pem' = '%s',
+                'properties.ssl.truststore.certificates' = '%s',
                 'properties.ssl.endpoint.identification.algorithm' = '',
                 'properties.ssl.certificate.verification' = '0',
 

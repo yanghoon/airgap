@@ -24,7 +24,7 @@ dependencies {
         api("org.apache.flink:flink-connector-base:${flinkVersion}")
 
         // Flink Connector (Kafka)
-        api("org.apache.flink:flink-connector-kafka_2.12:${kafkaVersion}")
+        api("org.apache.flink:flink-connector-kafka:${kafkaVersion}")
 
         // Iceberg Flink
         api("org.apache.iceberg:iceberg-flink-runtime-${flinkVersion}:${icebergVersion}")
