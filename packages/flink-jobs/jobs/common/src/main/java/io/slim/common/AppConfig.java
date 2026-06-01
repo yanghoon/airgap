@@ -1,0 +1,25 @@
+package io.slim.common;
+
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import java.util.List;
+import java.util.Map;
+
+@ConfigMapping(prefix = "app")
+public interface AppConfig {
+    
+    @WithDefault("local")
+    String env();
+    
+    // 계층형 구조를 1차원 Flat Map으로 자동 변환합니다.
+    Map<String, String> vars();
+    
+    JobConfig job();
+
+    interface JobConfig {
+        String name();
+        List<String> schemas();
+        List<String> pipelines();
+    }
+
+}

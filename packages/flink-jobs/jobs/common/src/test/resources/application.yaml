@@ -1,0 +1,18 @@
+env: "prod"
+
+vars:
+  kafka:
+    topic: user-events
+    options:
+      properties.bootstrap.servers: ${KAFKA_HOST:-localhost}:${KAFKA_PORT:-9092}
+      properties.group.id: multi-sink-group
+      scan.startup.mode: latest-offset
+      properties.ssl.truststore.certificates: file:/etc/prod/kafka.pem # 런타임 치환 대상
+      properties.secret: encrypted_dummy_value # 복호화 대상
+
+job:
+  name: kafka-to-multi-sink
+  schemas:
+    - classpath:sql/schema.sql
+  pipelines:
+    - classpath:sql/data.sql

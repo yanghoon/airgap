@@ -6,9 +6,13 @@ dependencies {
 
     var flinkVersion = "1.20.1"
     var log4jVersion = "2.17.1"
+    var junitVersion = "5.9.2"
 
     var kafkaVersion = "3.4.0-1.20"
     var icebergVersion = "1.8.1"
+
+    var smallryeVersion = "3.4.4"      // MicroProfile
+    var commonsTextVersion = "1.11.0"  // Template Engine
 
     constraints {
         // Flink Core
@@ -29,8 +33,22 @@ dependencies {
         // Iceberg Flink
         api("org.apache.iceberg:iceberg-flink-runtime-${flinkVersion}:${icebergVersion}")
 
+
+        /** Common **/
         // Logging
         api("org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}")
+
+        // Test
+        api("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+
+
+        /** Config **/
+        // MicroProfile
+        api("io.smallrye.config:smallrye-config:${smallryeVersion}")
+        api("io.smallrye.config:smallrye-config-source-yaml:${smallryeVersion}")
+
+        // Template Engine
+        api("org.apache.commons:commons-text:${commonsTextVersion}")
     }
 
 }

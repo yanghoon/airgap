@@ -12,3 +12,6 @@ include(":starters:flink-logging")
 
 // Starters - Libraries
 include(":starters:flink-kafka")
+
+// Libraries
+include(":jobs:common")
