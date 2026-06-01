@@ -1,12 +1,12 @@
 package io.slim.common.template;
 
-import org.apache.commons.text.StringSubstitutor;
-import org.apache.commons.text.lookup.StringLookup;
-import org.apache.commons.text.lookup.StringLookupFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.commons.text.StringSubstitutor;
+import org.apache.commons.text.lookup.StringLookup;
+import org.apache.commons.text.lookup.StringLookupFactory;
 
 public interface TemplateEngine {
 

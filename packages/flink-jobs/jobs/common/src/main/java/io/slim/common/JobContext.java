@@ -2,6 +2,9 @@ package io.slim.common;
 
 import java.util.Map;
 
+import io.slim.common.sql.SqlManager;
+import io.slim.common.template.TemplateContext;
+
 public class JobContext {
     private final JobEnvironment environment;
     private final TemplateContext templateContext;

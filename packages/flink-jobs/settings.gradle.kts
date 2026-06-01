@@ -9,6 +9,7 @@ include(":starters:flink-dependencies")
 include(":starters:flink-core")
 include(":starters:flink-table")
 include(":starters:flink-logging")
+include(":starters:flink-test")
 
 // Starters - Libraries
 include(":starters:flink-kafka")

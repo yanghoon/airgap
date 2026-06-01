@@ -3,7 +3,8 @@ plugins {
 }
 
 dependencies {
-    api(platform((project(":starters:flink-dependencies"))))
+    implementation(platform((project(":starters:flink-dependencies"))))
+    // compileOnly(platform((project(":starters:flink-dependencies"))))
     // Flink Dependencies (Provided)
     // compileOnly("org.apache.flink:flink-streaming-java:1.18.0")
     // compileOnly("org.apache.flink:flink-table-api-java-bridge:1.18.0")
@@ -15,5 +16,13 @@ dependencies {
     // Lightweight Template Engine
     implementation("org.apache.commons:commons-text")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    // testImplementation(project(":starters:flink-test"))
+    testImplementation(platform((project(":starters:flink-dependencies"))))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+// tasks.named<Test>("test") {
+tasks.withType<Test>() {
+    useJUnitPlatform()
 }

@@ -1,12 +1,14 @@
 package io.slim.common;
 
+import org.junit.jupiter.api.Test;
+
 public class ConfigTests {
     
     @Test
     public void testConfigLoading() {
     }
 
-//     import org.apache.flink.api.java.utils.ParameterTool;
+// import org.apache.flink.api.java.utils.ParameterTool;
 // import org.apache.flink.table.api.EnvironmentSettings;
 // import org.apache.flink.table.api.StatementSet;
 // import org.apache.flink.table.api.TableEnvironment;
@@ -48,7 +50,6 @@ public class ConfigTests {
 //         // 실제 KMS 복호화 로직을 이 곳에 구현합니다.
 //         return "decrypted_" + encrypted;
 //     }
-}
-
+// }
 
 }

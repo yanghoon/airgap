@@ -1,9 +1,10 @@
 package io.slim.common;
 
-import io.smallrye.config.ConfigMapping;
-import io.smallrye.config.WithDefault;
 import java.util.List;
 import java.util.Map;
+
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
 
 @ConfigMapping(prefix = "app")
 public interface AppConfig {

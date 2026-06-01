@@ -3,6 +3,10 @@ package io.slim.common.sql;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.slim.common.JobContext;
+import io.slim.common.ResourceLoader;
+import io.slim.common.template.TemplateEngine;
+
 public class SqlManager {
     private final JobContext context;
 

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import io.slim.common.AppConfig;
+
 public class TemplateContext {
     private final AppConfig config;
     private final Map<String, String> mutableVars;
