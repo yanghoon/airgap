@@ -6,7 +6,8 @@ dependencies {
 
     var flinkVersion = "1.20.1"
     var log4jVersion = "2.17.1"
-    var junitVersion = "5.14.4"
+    var junitVersion = "5.10.2"
+    var junitPlatformVersion = "1.10.2"
 
     var kafkaVersion = "3.4.0-1.20"
     var icebergVersion = "1.8.1"
@@ -41,8 +42,8 @@ dependencies {
         // Test
         api("org.junit.jupiter:junit-jupiter:${junitVersion}")
         api("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-        // api("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-        api("org.junit.platform:junit-platform-launcher:${junitVersion}")
+        api("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+        api("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
 
 
         /** Config **/

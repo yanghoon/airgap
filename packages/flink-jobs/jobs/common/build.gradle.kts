@@ -16,10 +16,10 @@ dependencies {
     // Lightweight Template Engine
     implementation("org.apache.commons:commons-text")
 
-    // testImplementation(project(":starters:flink-test"))
-    testImplementation(platform((project(":starters:flink-dependencies"))))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(project(":starters:flink-test"))
+    // testImplementation(platform((project(":starters:flink-dependencies"))))
+    // testImplementation("org.junit.jupiter:junit-jupiter")
+    // testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 // tasks.named<Test>("test") {
