@@ -1,11 +1,19 @@
 package io.slim.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
+
+import io.smallrye.config.Config;
 
 public class ConfigTests {
     
     @Test
     public void testConfigLoading() {
+        var config = Config.getOrCreate();
+        var val = config.getValue("job.name", String.class);
+
+        assertEquals("kafka-to-multi-sink", val);
     }
 
 // import org.apache.flink.api.java.utils.ParameterTool;

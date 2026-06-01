@@ -12,7 +12,7 @@ dependencies {
     var kafkaVersion = "3.4.0-1.20"
     var icebergVersion = "1.8.1"
 
-    var smallryeVersion = "3.4.4"      // MicroProfile
+    var smallryeVersion = "3.17.2"      // MicroProfile
     var commonsTextVersion = "1.11.0"  // Template Engine
 
     constraints {
