@@ -1,0 +1,13 @@
+# https://smallrye.io/smallrye-config/Main/config/configuration/
+smallrye:
+  config:
+#     profile: ""  # Set the active profile (e.g., "dev,", "prod", etc.)
+#     locations:
+#       - classpath:application.yaml"  # Specify the location of the configuration file
+    mapping:
+      validate-unknown: false  # Disable validation of unknown properties
+#     secret-handlers: all # Enable secret handlers (e.g., all, none)
+#     log:
+#       values: false # Disable logging of configuration values
+
+

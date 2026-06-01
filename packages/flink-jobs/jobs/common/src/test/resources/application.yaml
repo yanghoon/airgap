@@ -1,5 +1,10 @@
 env: "prod"
 
+smallrye:
+  config:
+    mapping:
+      validate-unknown: false
+
 vars:
   kafka:
     topic: user-events

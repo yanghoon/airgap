@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import io.slim.common.context.ConfigProvider;
 import io.smallrye.config.Config;
+import io.smallrye.config.ConfigMapping;
 
 public class ConfigTests {
     
@@ -14,6 +16,32 @@ public class ConfigTests {
         var val = config.getValue("job.name", String.class);
 
         assertEquals("kafka-to-multi-sink", val);
+    }
+
+    @Test
+    public void testConfigMapping() {
+        // var config = Config.getOrCreate();
+        var config = new io.smallrye.config.SmallRyeConfigBuilder()
+        //     .addDefaultInterceptors()
+        //     .addDefaultSources()
+            .addDiscoveredSources()
+        //     .addDiscoveredInterceptors()
+            .withMapping(JobConfig.class)
+            .build();
+        var jobConfig = config.getConfigMapping(JobConfig.class);
+
+        assertEquals("kafka-to-multi-sink", jobConfig.name());
+    }
+
+    @Test
+    public void testDynamicMapping() {
+        var jobConfig = ConfigProvider.getConfigMapping(JobConfig.class);
+        assertEquals("kafka-to-multi-sink", jobConfig.name());
+    }
+
+    @ConfigMapping(prefix = "job")
+    public static interface JobConfig {
+        String name();
     }
 
 // import org.apache.flink.api.java.utils.ParameterTool;
