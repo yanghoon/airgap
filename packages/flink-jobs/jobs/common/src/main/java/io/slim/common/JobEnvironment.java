@@ -1,20 +1,26 @@
 package io.slim.common;
 
-import io.smallrye.config.SmallRyeConfig;
-import io.smallrye.config.SmallRyeConfigBuilder;
+import java.util.List;
+import java.util.Map;
 
-public class JobEnvironment {
-    private final AppConfig appConfig;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
 
-    public JobEnvironment(String configPath) {
-        SmallRyeConfig config = new SmallRyeConfigBuilder()
-            .addDefaultSources() // 시스템 속성 및 OS 환경변수 자동 매핑
-            // .withLocations(configPath) // 전달받은 경로의 YAML 적용
-            .withMapping(AppConfig.class)
-            .build();
+@ConfigMapping
+public interface JobEnvironment {
+    
+    @WithDefault("local")
+    String env();
+    
+    // 계층형 구조를 1차원 Flat Map으로 자동 변환합니다.
+    Map<String, String> vars();
+    
+    JobConfig config();
 
-        this.appConfig = config.getConfigMapping(AppConfig.class);
+    interface JobConfig {
+        String name();
+        List<String> schemas();
+        List<String> pipelines();
     }
 
-    public AppConfig getConfig() { return appConfig; }
 }

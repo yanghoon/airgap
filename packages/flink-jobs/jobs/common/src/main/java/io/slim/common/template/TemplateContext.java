@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import io.slim.common.AppConfig;
+import io.slim.common.JobEnvironment;
 
 public class TemplateContext {
-    private final AppConfig config;
+    private final JobEnvironment config;
     private final Map<String, String> mutableVars;
 
-    public TemplateContext(AppConfig config) {
+    public TemplateContext(JobEnvironment config) {
         this.config = config;
         this.mutableVars = new HashMap<>(config.vars());
     }
@@ -26,7 +26,7 @@ public class TemplateContext {
         
         // 최상위 메타데이터 명시적 주입
         finalMap.put("app.env", config.env());
-        finalMap.put("app.job.name", config.job().name());
+        finalMap.put("app.job.name", config.config().name());
         
         return finalMap;
     }
