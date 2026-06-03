@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class ResourceLoader {
+
     public static String load(String path) {
         try {
             if (path.startsWith("classpath:")) {
@@ -23,4 +24,5 @@ public class ResourceLoader {
             throw new UncheckedIOException("Failed to load resource: " + path, e);
         }
     }
+
 }

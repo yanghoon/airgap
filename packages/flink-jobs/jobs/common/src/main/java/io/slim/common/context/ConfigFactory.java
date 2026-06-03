@@ -1,10 +1,9 @@
 package io.slim.common.context;
 
+import java.util.Arrays;
+
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * SmallRye Config를 단독으로 사용하는 환경에서 빌더 설정을 캡슐화하고, 
@@ -25,11 +24,7 @@ public class ConfigFactory {
                 .addDiscoveredSources()      // application.properties 등
                 .addDiscoveredConverters();  // 타입 변환기
 
-        if (mappingClasses != null) {
-            for (Class<?> clazz : mappingClasses) {
-                builder.withMapping(clazz);
-            }
-        }
+        Arrays.stream(mappingClasses).forEach(builder::withMapping);
 
         return builder.build();
     }

@@ -1,33 +1,41 @@
 package io.slim.common.template;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import io.slim.common.JobEnvironment;
 
 public class TemplateContext {
-    private final JobEnvironment config;
-    private final Map<String, String> mutableVars;
 
-    public TemplateContext(JobEnvironment config) {
-        this.config = config;
-        this.mutableVars = new HashMap<>(config.vars());
+    private final Map<String, String> vars;
+
+    public TemplateContext(JobEnvironment environment) {
+        this.vars = new HashMap<>();
+
+        // 1. YAML 파싱 과정에서 중간에 삽입된 모든 큰따옴표("") 제거
+        Stream.ofNullable(environment.vars())
+            .flatMap(vars -> vars.entrySet().stream())
+            .forEach(entry -> {
+                var rawKey = entry.getKey();
+                var cleanKey = rawKey.replace("\"", "");
+                this.vars.put(cleanKey, entry.getValue());
+            });
+        
+        this.vars.put("job.name", environment.job().name());
+        this.vars.put("env", environment.env());
     }
 
+    @Deprecated
     public TemplateContext computeIfPresent(String flatKey, Function<String, String> processor) {
-        mutableVars.computeIfPresent(flatKey, (k, v) -> processor.apply(v));
+        vars.computeIfPresent(flatKey, (k, v) -> processor.apply(v));
         return this;
     }
 
-    public Map<String, Object> toFlatMap() {
-        Map<String, Object> finalMap = new HashMap<>();
-        mutableVars.forEach((k, v) -> finalMap.put("app.vars." + k, v));
-        
-        // 최상위 메타데이터 명시적 주입
-        finalMap.put("app.env", config.env());
-        finalMap.put("app.job.name", config.config().name());
-        
-        return finalMap;
+    public Map<String, Object> getVars() {
+        return Collections.unmodifiableMap(vars);
     }
+
 }

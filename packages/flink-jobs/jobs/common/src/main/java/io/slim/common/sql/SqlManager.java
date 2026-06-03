@@ -3,29 +3,35 @@ package io.slim.common.sql;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.slim.common.JobContext;
+import io.slim.common.JobEnvironment;
 import io.slim.common.ResourceLoader;
+import io.slim.common.template.TemplateContext;
 import io.slim.common.template.TemplateEngine;
 
 public class SqlManager {
-    private final JobContext context;
+    private final JobEnvironment environment;
+    private final TemplateContext templateContext;
+    private final TemplateEngine templateEngine;
 
-    public SqlManager(JobContext context) { 
-        this.context = context; 
+    public SqlManager(JobEnvironment environment, TemplateContext templateContext, TemplateEngine templateEngine) { 
+        this.environment = environment;
+        this.templateContext = templateContext;
+        this.templateEngine = templateEngine;
     }
 
     public List<String> getRenderedSchemas() {
-        return renderList(context.getEnvironment().getConfig().job().schemas());
+        return renderList(environment.job().schemas());
     }
 
     public List<String> getRenderedPipelines() {
-        return renderList(context.getEnvironment().getConfig().job().pipelines());
+        return renderList(environment.job().pipelines());
     }
 
     private List<String> renderList(List<String> paths) {
         if (paths == null) return List.of();
         return paths.stream().map(path -> 
-            TemplateEngine.render(ResourceLoader.load(path), context.getTemplateContext().toFlatMap())
+            templateEngine.render(ResourceLoader.load(path), templateContext.getVars())
         ).collect(Collectors.toList());
     }
+
 }

@@ -14,6 +14,10 @@ vars:
       scan.startup.mode: latest-offset
       properties.ssl.truststore.certificates: file:/etc/prod/kafka.pem # 런타임 치환 대상
       properties.secret: encrypted_dummy_value # 복호화 대상
+  iceberg:
+    catalog: prod_iceberg_catalog
+    uri: thrift://iceberg-metastore:9083
+    warehouse: hdfs://iceberg-warehouse
 
 job:
   name: kafka-to-multi-sink

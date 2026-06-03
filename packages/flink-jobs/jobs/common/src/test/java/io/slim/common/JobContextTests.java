@@ -14,4 +14,14 @@ public class JobContextTests {
         assertNotNull(jobContext.getTemplateContext());
     }
 
+    @Test
+    public void testSqlManager() {
+        var jobContext = JobContext.create();
+        var sqlManager = jobContext.getSqlManager();
+        assertNotNull(sqlManager);
+
+        sqlManager.getRenderedSchemas().forEach(System.out::println);
+        sqlManager.getRenderedPipelines().forEach(System.out::println);
+    }
+
 }
