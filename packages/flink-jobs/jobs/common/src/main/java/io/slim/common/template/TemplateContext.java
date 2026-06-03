@@ -24,11 +24,15 @@ public class TemplateContext {
                 this.vars.put(cleanKey, entry.getValue());
             });
         
+        // Optional.ofNullable(environment.job())
+        //     .map(job -> job.name())
+        //     .ifPresent(name -> this.vars.put("job.name", name));
+        // Optional.ofNullable(environment.env())
+        //     .ifPresent(env -> this.vars.put("env", env)));
         this.vars.put("job.name", environment.job().name());
         this.vars.put("env", environment.env());
     }
 
-    @Deprecated
     public TemplateContext computeIfPresent(String flatKey, Function<String, String> processor) {
         vars.computeIfPresent(flatKey, (k, v) -> processor.apply(v));
         return this;

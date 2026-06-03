@@ -13,6 +13,8 @@ public class JobContext {
     private TemplateContext templateContext;
     private SqlManager sqlManager;
 
+    private JobContext() {}
+
     public static JobContext create(Class<?>... mappingClasses) {
         var config = ConfigFactory.create(
             Stream.concat(

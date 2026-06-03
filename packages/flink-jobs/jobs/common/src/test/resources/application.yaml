@@ -18,6 +18,8 @@ vars:
     catalog: prod_iceberg_catalog
     uri: thrift://iceberg-metastore:9083
     warehouse: hdfs://iceberg-warehouse
+  security:
+    certificates: classpath:certs/ca.pem
 
 job:
   name: kafka-to-multi-sink
