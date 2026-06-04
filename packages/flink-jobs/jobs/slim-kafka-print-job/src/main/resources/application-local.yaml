@@ -1,0 +1,7 @@
+vars:
+  kafka:
+    topic: test-topic
+    options:
+      format: raw
+      scan.startup.mode: earliest-offset
+      properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092

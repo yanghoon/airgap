@@ -10,16 +10,31 @@ spec:
     taskmanager.numberOfTaskSlots: 1
     parallelism.default: 1
 
-  serviceAccount: flink
   ingress:
     tempalte: flink.local/{{namespace}}/{{name}}(/|$)(.*)
     className: nginx
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+  serviceAccount: flink
   podTemplate:
     metadata:
       labels:
         zarf.dev/agent: ignore
+    spec:
+      containers:
+        - name: flink-main-container
+          envFrom:
+            - configMapRef:
+                name: slim-kafka-print-job-env
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/flink/config
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: slim-kafka-print-job-config
 
   jobManager:
     replicas: 1

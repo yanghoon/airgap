@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: slim-kafka-print-job-env
+data:
+  SMALLRYE_CONFIG_PROFILE: k8s
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: slim-kafka-print-job-config
+data:
+  application.yaml: |
+    vars:
+      kafka:
+        topic: test-topic
+        options:
+          format: raw
+          scan.startup.mode: earliest-offset
+          properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
