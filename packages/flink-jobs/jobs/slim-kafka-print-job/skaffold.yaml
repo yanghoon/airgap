@@ -4,21 +4,15 @@ metadata:
   name: slim-kafka-print-job
 
 build:
-  # local:
-  #   push: false
+  local:
+    push: false
   tagPolicy:
     gitCommit:  # git describe --tags --always
   artifacts:
     - image: slim-kafka-print-job
       # VER #3
       custom:
-        buildCommand: |
-          echo "Working Directory: $(pwd)"
-
-          JOB_NAME="$(basename $(pwd))"
-
-          ../../gradlew :jobs:$JOB_NAME:clean :jobs:$JOB_NAME:shadowJar
-          docker build --tag=$IMAGE -f Dockerfile.common .
+        buildCommand: ../docker/build.sh
         # dependencies:
         #   paths:
         #     - ./build/libs/*
