@@ -1,0 +1,1 @@
+INSERT INTO sink SELECT CONCAT(log_line, ' !!!!') FROM source

@@ -4,4 +4,12 @@ vars:
     options:
       format: raw
       scan.startup.mode: earliest-offset
+      
+      properties.group.id: slim-kafka-print-job
       properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
+      properties.bootstrap.servers: kafka.local:443
+      properties.security.protocol: SSL
+      properties.ssl.truststore.type: PEM
+      properties.ssl.truststore.certificates: classpath:ssl/kafka.pem
+      properties.ssl.endpoint.identification.algorithm: " "
+      properties.ssl.certificate.verification: 0

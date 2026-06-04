@@ -10,6 +10,8 @@ dependencies {
 
     implementation(project(":starters:flink-kafka"))
 
+    implementation(project(":jobs:common"))
+
     runtimeOnly(project(":starters:flink-logging"))
     runtimeOnly(project(":starters:flink-core"))
     runtimeOnly(project(":starters:flink-table"))

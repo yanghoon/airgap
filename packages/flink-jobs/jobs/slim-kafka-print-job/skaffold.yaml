@@ -10,9 +10,28 @@ build:
     gitCommit:  # git describe --tags --always
   artifacts:
     - image: slim-kafka-print-job
-      context: ..
-      docker:
-        dockerfile: slim-kafka-print-job/Dockerfile
+      # VER #3
+      custom:
+        buildCommand: |
+          echo "Working Directory: $(pwd)"
+
+          JOB_NAME="$(basename $(pwd))"
+
+          ../../gradlew :jobs:$JOB_NAME:clean :jobs:$JOB_NAME:shadowJar
+          docker build --tag=$IMAGE -f Dockerfile.common .
+        # dependencies:
+        #   paths:
+        #     - ./build/libs/*
+        # dependencies:
+        #   # - ../build.gradle
+        #   # - ../settings.gradle
+        #   # - ../jobs/slim-kafka-print-job/build.gradle
+        #   # - ../jobs/slim-kafka-print-job/src/**/*
+      # VER #1
+      # context: ..
+      # docker:
+      #   dockerfile: slim-kafka-print-job/Dockerfile
+      # VER #2
       # hooks:
       #   before:
       #     - command: ["./gradlew", ":slim-kafka-print-job:clean", ":slim-kafka-print-job:shadowJar"]
