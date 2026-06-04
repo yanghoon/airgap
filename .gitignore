@@ -6,6 +6,7 @@ zarf-package-*.*
 .tmp
 logs/
 
+bin
 build
 .gradle
 

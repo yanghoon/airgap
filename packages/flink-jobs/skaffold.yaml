@@ -4,4 +4,5 @@ metadata:
   name: flink-jobs
 
 requires:
-  - path: counter-job/skaffold.yaml
+  - path: jobs/counter-job/skaffold.yaml
+  - path: jobs/slim-kafka-print-job/skaffold.yaml

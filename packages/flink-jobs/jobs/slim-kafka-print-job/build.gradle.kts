@@ -1,6 +1,7 @@
 plugins {
     java
     application
+    id("com.gradleup.shadow") version "8.3.0"
 }
 
 dependencies {
@@ -15,5 +16,14 @@ dependencies {
 }
 
 application {
-    mainClass.set("io.slim.flink.KafkaPrintJob")
+    mainClass = "io.slim.flink.KafkaPrintJob"
+}
+
+tasks.shadowJar {
+    dependencies {
+        exclude(dependency("org.apache.flink:.*"))
+        exclude(dependency("com.google.code.findbugs:jsr305"))
+        exclude(dependency("org.slf4j:.*"))
+        exclude(dependency("org.apache.logging.log4j:.*"))
+    }
 }

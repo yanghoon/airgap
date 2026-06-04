@@ -1,0 +1,27 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: slim-kafka-print-job
+
+build:
+  # local:
+  #   push: false
+  tagPolicy:
+    gitCommit:  # git describe --tags --always
+  artifacts:
+    - image: slim-kafka-print-job
+      context: ..
+      docker:
+        dockerfile: slim-kafka-print-job/Dockerfile
+      # hooks:
+      #   before:
+      #     - command: ["./gradlew", ":slim-kafka-print-job:clean", ":slim-kafka-print-job:shadowJar"]
+
+manifests:
+  rawYaml:
+    - manifests/*.yaml
+
+resourceSelector:
+  allow:
+    - groupKind: FlinkDeployment.flink.apache.org
+      image: [".*"]
