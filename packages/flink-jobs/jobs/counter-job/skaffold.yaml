@@ -4,18 +4,14 @@ metadata:
   name: counter-job
 
 build:
-  # local:
-  #   push: false
+  local:
+    push: false
   tagPolicy:
     gitCommit:  # git describe --tags --always
   artifacts:
     - image: counter-job
-      context: ..
-      docker:
-        dockerfile: counter-job/Dockerfile
-      # hooks:
-      #   before:
-      #     - command: ["./gradlew", ":counter-job:clean", ":counter-job:build"]
+      custom:
+        buildCommand: ../docker/build.sh
 
 manifests:
   rawYaml:
@@ -25,8 +21,3 @@ resourceSelector:
   allow:
     - groupKind: FlinkDeployment.flink.apache.org
       image: [".*"]
-
-# deploy:
-#   kubectl:
-#     manifests:
-#       - manifests/*.yaml

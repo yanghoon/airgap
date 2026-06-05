@@ -10,12 +10,13 @@ spec:
     taskmanager.numberOfTaskSlots: 1
     parallelism.default: 1
 
-  serviceAccount: flink
   ingress:
     tempalte: flink.local/{{namespace}}/{{name}}(/|$)(.*)
     className: nginx
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+  serviceAccount: flink
   podTemplate:
     metadata:
       labels:
