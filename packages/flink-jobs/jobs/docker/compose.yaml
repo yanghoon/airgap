@@ -6,6 +6,8 @@ services:
     command: standalone-job --job-classname ${MAIN_CLASS:?MAIN_CLASS required(.env)}
     ports:
       - 8081:8081  # Flink Web UI Port
+    extra_hosts:
+      - redpanda:host-gateway
     environment:
       FLINK_PROPERTIES: |
         jobmanager.rpc.address: jobmanager
@@ -14,6 +16,8 @@ services:
   taskmanager:
     image: ${FLINK_IMAGE:?FLINK_IMAGE requied(.env)}
     command: taskmanager
+    extra_hosts:
+      - redpanda:host-gateway
     environment:
       FLINK_PROPERTIES: |
         jobmanager.rpc.address: jobmanager

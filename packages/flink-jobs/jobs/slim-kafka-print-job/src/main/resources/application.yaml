@@ -11,4 +11,4 @@ job:
     - classpath:sql/schema_sink.sql
   pipelines:
     - classpath:sql/data.sql
-    - classpath:sql/data_2.sql
+    # - classpath:sql/data_2.sql

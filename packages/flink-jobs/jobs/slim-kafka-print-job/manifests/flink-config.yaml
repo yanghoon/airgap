@@ -18,3 +18,9 @@ data:
           format: raw
           scan.startup.mode: earliest-offset
           properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
+    job:
+      pipelines:
+        - classpath:sql/data.sql
+        - file:/opt/flink/config/data.sql
+  data.sql: |
+    INSERT INTO sink SELECT CONCAT(log_line, ' $$$$') FROM source

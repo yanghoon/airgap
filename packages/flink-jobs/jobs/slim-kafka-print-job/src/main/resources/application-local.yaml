@@ -6,10 +6,11 @@ vars:
       scan.startup.mode: earliest-offset
       
       properties.group.id: slim-kafka-print-job
-      properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
-      properties.bootstrap.servers: kafka.local:443
-      properties.security.protocol: SSL
-      properties.ssl.truststore.type: PEM
-      properties.ssl.truststore.certificates: classpath:certs/kafka.pem
-      properties.ssl.endpoint.identification.algorithm: " "
-      properties.ssl.certificate.verification: 0
+      properties.bootstrap.servers: redpanda:29092
+      # properties.bootstrap.servers: kafka.local:443
+      # properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
+      # properties.security.protocol: SSL
+      # properties.ssl.truststore.type: PEM
+      # properties.ssl.truststore.certificates: classpath:certs/kafka.pem
+      # properties.ssl.endpoint.identification.algorithm: " "
+      # properties.ssl.certificate.verification: 0
