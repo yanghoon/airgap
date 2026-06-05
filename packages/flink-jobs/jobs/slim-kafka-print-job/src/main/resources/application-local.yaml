@@ -10,6 +10,6 @@ vars:
       properties.bootstrap.servers: kafka.local:443
       properties.security.protocol: SSL
       properties.ssl.truststore.type: PEM
-      properties.ssl.truststore.certificates: classpath:ssl/kafka.pem
+      properties.ssl.truststore.certificates: classpath:certs/kafka.pem
       properties.ssl.endpoint.identification.algorithm: " "
       properties.ssl.certificate.verification: 0
