@@ -1,0 +1,52 @@
+global:
+  host: "dify.local"
+  port: "8080"
+  enableTLS: false
+  extraEnvs:
+    - name: FORCE_VERIFYING_SIGNATURE
+      value: "false"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "dify.local"
+
+pluginDaemon:
+  envs:
+    - name: SERVER_PORT
+      value: "5002"
+    - name: MAX_PLUGIN_PACKAGE_SIZE
+      value: "52428800"
+    - name: PPROF_ENABLED
+      value: "false"
+    - name: FORCE_VERIFYING_SIGNATURE
+      value: "false"
+    - name: DB_DATABASE
+      value: "dify_plugin"
+    - name: PLUGIN_REMOTE_INSTALLING_HOST
+      value: "0.0.0.0"
+    - name: PLUGIN_REMOTE_INSTALLING_PORT
+      value: "5003"
+  persistence:
+    enabled: true
+    storageClass: "standard"
+    accessMode: ReadWriteOnce
+    size: 5Gi
+
+postgresql:
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "standard"
+
+redis:
+  master:
+    persistence:
+      enabled: true
+      storageClass: "standard"
+
+minio:
+  embedded: true
+  persistence:
+    enabled: true
+    storageClass: "standard"

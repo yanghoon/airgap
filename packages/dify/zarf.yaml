@@ -1,29 +1,26 @@
 kind: ZarfPackageConfig
 metadata:
-  name: dify-boris-community
-  description: "Dify LLM platform (BorisPolonsky community chart)"
-  version: 0.36.0
+  name: dify
+  version: 1.14.1
 
 components:
-  - name: dify-stack
+  - name: dify-core
     required: true
     charts:
       - name: dify
-        releaseName: dify
-        url: https://borispolonsky.github.io/dify-helm/
-        version: 0.36.0
-        namespace: dify-system
+        url: https://douban.github.io/charts/
+        version: 0.9.0
+        namespace: dify
         valuesFiles:
-          - values-dify.yaml
-
-    # 에어갭 환경을 위한 컨테이너 이미지 번들링
-    images:
-      - cr.weaviate.io/semitechnologies/weaviate:1.27.27
-      - docker.io/alpine:latest
-      - docker.io/bitnamilegacy/postgresql:15.3.0-debian-11-r7
-      - docker.io/bitnamilegacy/redis:7.0.11-debian-11-r12
-      - langgenius/dify-api:1.12.1
-      - langgenius/dify-plugin-daemon:0.5.3-local
-      - langgenius/dify-sandbox:0.2.12
-      - langgenius/dify-web:1.12.1
-      - nginx:latest
+          - values.yaml
+    files:
+      - source: openai_api_compatible.difypkg
+        target: openai_api_compatible.difypkg
+    actions:
+      onDeploy:
+        after:
+          - cmd: ./zarf tools kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=plugin-daemon -n dify --timeout=300s
+          - cmd: |
+              PLUGIN_POD=$(./zarf tools kubectl get pod -n dify -l app.kubernetes.io/component=plugin-daemon -o jsonpath='{.items[0].metadata.name}')
+              ./zarf tools kubectl cp openai_api_compatible.difypkg dify/${PLUGIN_POD}:/app/storage/openai_api_compatible.difypkg
+              ./zarf tools kubectl rollout restart deployment dify-plugin-daemon -n dify
