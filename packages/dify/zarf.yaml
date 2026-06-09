@@ -34,25 +34,32 @@ components:
   #     - langgenius/dify-sandbox:0.2.12
   #     - langgenius/dify-web:1.10.1-fix.1
 
-  # - name: tei-embedding
+  - name: tei-embedding
+    required: false
+    manifests:
+      - name: tei-pvc
+        namespace: dify
+        files:
+          - tei-pvc.yaml
+    charts:
+      - name: text-embeddings-inference
+        url: https://infracloudio.github.io/charts/
+        version: 0.1.8
+        namespace: dify
+        valuesFiles:
+          - tei-values.yaml
+    images:
+      - ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+
+  # - name: bifrost
+  #   description: "Bifrost Gateway for Dify"
   #   required: false
   #   charts:
-  #     - name: tei-embedding
-  #       localPath: ./tei-embedding-chart
+  #     - name: bifrost
+  #       localPath: ./bifrost-chart-official
   #       namespace: dify
   #       version: 0.1.0
+  #       valuesFiles:
+  #         - bifrost-values.yaml
   #   images:
-  #     - ghcr.io/huggingface/text-embeddings-inference:cpu-latest
-
-  - name: bifrost
-    description: "Bifrost Gateway for Dify"
-    required: false
-    charts:
-      - name: bifrost
-        localPath: ./bifrost-chart-official
-        namespace: dify
-        version: 0.1.0
-        valuesFiles:
-          - bifrost-values.yaml
-    images:
-      - maximhq/bifrost:v1.5.3
+  #     - maximhq/bifrost:v1.5.3
