@@ -4,23 +4,55 @@ metadata:
   version: 1.14.1
 
 components:
-  - name: dify-core
-    required: true
+  # - name: dify-core
+  #   required: true
+  #   charts:
+  #     - name: dify
+  #       url: https://douban.github.io/charts/
+  #       version: 0.9.0
+  #       namespace: dify
+  #       valuesFiles:
+  #         - values.yaml
+  #   # files:
+  #   #   - source: openai_api_compatible.difypkg
+  #   #     target: openai_api_compatible.difypkg
+  #   actions:
+  #     onDeploy:
+  #       after:
+  #         - cmd: ./zarf tools kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=plugin-daemon -n dify --timeout=300s
+  #         - cmd: |
+  #             PLUGIN_POD=$(./zarf tools kubectl get pod -n dify -l app.kubernetes.io/component=plugin-daemon -o jsonpath='{.items[0].metadata.name}')
+  #             ./zarf tools kubectl cp openai_api_compatible.difypkg dify/${PLUGIN_POD}:/app/storage/openai_api_compatible.difypkg
+  #             ./zarf tools kubectl rollout restart deployment dify-plugin-daemon -n dify
+  #   images:
+  #     - busybox
+  #     - docker.io/bitnamilegacy/minio:2024.4.18-debian-12-r0
+  #     - docker.io/bitnamilegacy/postgresql:16.3.0-debian-12-r4
+  #     - docker.io/bitnamilegacy/redis:7.2.4-debian-12-r13
+  #     - langgenius/dify-api:1.10.1-fix.1
+  #     - langgenius/dify-plugin-daemon:0.5.1-local
+  #     - langgenius/dify-sandbox:0.2.12
+  #     - langgenius/dify-web:1.10.1-fix.1
+
+  # - name: tei-embedding
+  #   required: false
+  #   charts:
+  #     - name: tei-embedding
+  #       localPath: ./tei-embedding-chart
+  #       namespace: dify
+  #       version: 0.1.0
+  #   images:
+  #     - ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+
+  - name: bifrost
+    description: "Bifrost Gateway for Dify"
+    required: false
     charts:
-      - name: dify
-        url: https://douban.github.io/charts/
-        version: 0.9.0
+      - name: bifrost
+        localPath: ./bifrost-chart-official
         namespace: dify
+        version: 0.1.0
         valuesFiles:
-          - values.yaml
-    files:
-      - source: openai_api_compatible.difypkg
-        target: openai_api_compatible.difypkg
-    actions:
-      onDeploy:
-        after:
-          - cmd: ./zarf tools kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=plugin-daemon -n dify --timeout=300s
-          - cmd: |
-              PLUGIN_POD=$(./zarf tools kubectl get pod -n dify -l app.kubernetes.io/component=plugin-daemon -o jsonpath='{.items[0].metadata.name}')
-              ./zarf tools kubectl cp openai_api_compatible.difypkg dify/${PLUGIN_POD}:/app/storage/openai_api_compatible.difypkg
-              ./zarf tools kubectl rollout restart deployment dify-plugin-daemon -n dify
+          - bifrost-values.yaml
+    images:
+      - maximhq/bifrost:v1.5.3
