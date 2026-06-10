@@ -1,0 +1,90 @@
+image:
+  repository: maximhq/bifrost
+  tag: v1.5.3
+  adminUsername: admin
+  adminPassword: password123
+
+logLevel: debug
+
+extraEnv:
+  CUSTOM_PROVIDER_HEADERS_API_KEY: dummy-headers-key
+  # Not Working
+  CUSTOM_PROVIDER_API_KEY: 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
+
+ingress:
+  enabled: true
+  # className: ""
+  # hosts:
+  #   - host: bifrost.local
+  #     paths:
+  #       - path: /
+  #         pathType: Prefix
+
+# storage:
+#   persistence:
+#     storageClass: standard
+
+resources:
+  limit: {}
+  requests: {}
+
+bifrost:
+  client:
+    enforceAuthOnInference: false
+
+  framework:
+    pricing:
+      pricingUrl: http://bifrost-mirror/pricing.json
+      modelParametersUrl: http://bifrost-mirror/model_parameters.json
+
+  providers:
+    # LLM
+    custom:
+      network_config:
+        base_url: "https://openrouter.ai/api/"
+        extra_headers:
+          content-type: "application/json"
+          accept: "text/event-stream; charset=utf-8"
+          x-api-key: "env.CUSTOM_PROVIDER_HEADERS_API_KEY"
+      keys:
+        - name: "internal-key"
+          value: "env.CUSTOM_PROVIDER_API_KEY"
+          weight: 1
+          models: ["auto"]
+          aliases:
+            auto: "openrouter/auto"
+            gpt-oss-120b: "openai/gpt-oss-120b"
+      send_back_raw_request: true
+      send_back_raw_response: true
+      store_raw_request_response: true
+      custom_provider_config:
+        base_provider_type: "openai"
+        allowed_requests:
+          list_models: false
+          text_completion: true
+          text_completion_stream: true
+          chat_completion: true
+          chat_completion_stream: true
+
+    # embedding:
+    #   send_back_raw_request: true
+    #   send_back_raw_response: true
+    #   store_raw_request_response: true
+    #   custom_provider_config:
+    #     base_provider_type: "openai"
+    #     allowed_requests:
+    #       embedding: true
+    #   network_config:
+    #     base_url: "http://tei-embedding/"
+    #   keys:
+    #     - name: "embedding"
+    #       value: "dummy-api-key"
+    #       weight: 1
+    #       models: ["*"]
+    #       aliases:
+    #         "embedding/multilingual-e5-small": "intfloat/multilingual-e5-small"
+
+  authConfig:
+    disableAuthOnInference: true
+    adminUsername: admin
+    adminPassword: password123

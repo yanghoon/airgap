@@ -1,0 +1,19 @@
+kind: ZarfPackageConfig
+metadata:
+  name: bifrost
+  version: 1.14.1
+
+components:
+  - name: bifrost
+    description: "Bifrost Gateway for Dify"
+    required: false
+    charts:
+      - name: bifrost
+        version: helm-chart-v1.5.3  # git-tag
+        namespace: dify
+        url: https://github.com/maximhq/bifrost.git
+        gitPath: helm-charts/bifrost
+        valuesFiles:
+          - values-bifrost.yaml
+    images:
+      - maximhq/bifrost:v1.5.3
