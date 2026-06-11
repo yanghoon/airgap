@@ -3,10 +3,15 @@
 ## Dify Docker Compose
 
 ```bash
-curl -L https://github.com/langgenius/dify/archive/refs/heads/main.zip -o dify.zip
+docker compose up
+```
+
+```bash
+mkdir -p .tmp
+curl -L https://github.com/langgenius/dify/archive/refs/heads/main.zip -o .tmp/dify.zip
 
 mkdir -p temp_dify
-unzip -q dify.zip -d temp_dify
+unzip -q .tmp/dify.zip -d temp_dify
 mv temp_dify/dify-main/docker ./dify
 
 rm -rf temp_dify
@@ -45,11 +50,16 @@ vi dify/.env
 ### Setup
 
 ```bash
-curl -L https://github.com/langgenius/dify-plugin-offline-packager/archive/refs/haeds/main.tar.gz -o packager.tar.gz
+curl -L https://github.com/kuroboko/dify-plugin-offline-packager/archive/refs/haeds/main.tar.gz -o packager.tar.gz
 
 mkdir -p packager
 tar -xzf packager.tar.gz -C packager
 rm packager.tar.gz
+
+# dify-plugin binary
+# curl -L https://github.com/langgenius/dify-plugin-daemon/releases/download/0.6.1/dify-plugin-linux-amd64 -o dify-plugin
+# chmod u+x dify-plugin && mv dify-plugin packager/bin/
+# cp packager/bin/dify-plugin version
 ```
 
 ```bash

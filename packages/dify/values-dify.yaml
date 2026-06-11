@@ -9,23 +9,23 @@ global:
 # image:
 #   api:
 #     repository: langenius:dify-api
-#     tag: 1.10.1
+#     tag: 1.14.2
 #     # pullPolicy: IfNotPresent
 #   pluginDaemon:
 #     repository: langenius:dify-plugin-daemon
-#     tag: 0.5.1-local
+#     tag: 0.6.1-local
 #   web:
 #     repository: langenius:dify-web
-#     tag: 1.10.1
+#     tag: 1.14.2
 #   sendbox:
 #     repository: langenius:dify-sandbox
-#     tag: 1.10.1
+#     tag: 0.2.15
 #   proxy:
 #     repository: nginx
 #     tag: 1.25.3
 #   ssrfProxy:
 #     repository: ubuntu/squid
-#     tag: 1.10.1
+#     tag: 
 
 ingress:
   enabled: true
