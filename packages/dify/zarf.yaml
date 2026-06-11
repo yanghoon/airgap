@@ -3,22 +3,74 @@ metadata:
   name: dify
   version: 1.14.1
 
+variables:
+  - name: NAMESPACE
+    description: "Target Namespace"
+    default: "dify"
+
+  # S3 Configuration (Used by both MinIO and Iceberg-REST)
+  - name: S3_ENDPOINT
+    description: "S3 Endpoint URL (e.g., http://minio.iceberg-system.svc:9000)"
+    default: "http://minio:9000"
+    prompt: true
+
+  - name: S3_ACCESS_KEY
+    default: "minioadmin"
+    prompt: true
+
+  - name: S3_SECRET_KEY
+    default: "minioadmin"
+    prompt: true
+    sensitive: true
+
+  - name: S3_BUCKET
+    default: "difyai"
+    prompt: true
+  
+  # - name: S3_PATH
+  #   default: dify
+  #   prompt: true
+
+  - name: S3_REGION
+    default: us-east-1
+    prompt: true
+
 components:
   - name: dify-core
     required: true
     charts:
       - name: dify
-        url: https://borisplonsky.github.io/dify-helm
+        url: https://borispolonsky.github.io/dify-helm
         version: 0.36.0
         namespace: dify
         valuesFiles:
           - values-dify.yaml
-  #   images:
-  #     - busybox
-  #     - docker.io/bitnamilegacy/minio:2024.4.18-debian-12-r0
-  #     - docker.io/bitnamilegacy/postgresql:16.3.0-debian-12-r4
-  #     - docker.io/bitnamilegacy/redis:7.2.4-debian-12-r13
-  #     - langgenius/dify-api:1.10.1-fix.1
-  #     - langgenius/dify-plugin-daemon:0.5.1-local
-  #     - langgenius/dify-sandbox:0.2.12
-  #     - langgenius/dify-web:1.10.1-fix.1
+    images:
+      - docker.io/bitnamilegacy/postgresql:17.6.0
+      - docker.io/bitnamilegacy/redis:8.2.1
+      - langgenius/dify-api:1.14.2
+      - langgenius/dify-plugin-daemon:0.6.1-local
+      - langgenius/dify-sandbox:0.2.12
+      - langgenius/dify-web:1.14.2
+      - nginx:1.25.3
+
+  - name: bifrost
+    required: false
+    import:
+      path: bifrost
+    images:
+      - maximhq/bifrost:v1.5.3
+  
+  - name: minio
+    required: false
+    description: "Install internal MinIO? (Select N if using external S3)"
+    charts:
+      - name: minio
+        url: https://charts.bitnami.com/bitnami
+        version: 17.0.21
+        namespace: dify
+        valuesFiles:
+          - values-minio.yaml
+    images:
+      - bitnamilegacy/minio:2025.7.23
+      - bitnamilegacy/minio-object-browser:2.0.2

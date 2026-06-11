@@ -6,26 +6,26 @@ global:
   #   - name: FORCE_VERIFYING_SIGNATURE
   #     value: "false"
 
-# image:
-#   api:
-#     repository: langenius:dify-api
-#     tag: 1.14.2
-#     # pullPolicy: IfNotPresent
-#   pluginDaemon:
-#     repository: langenius:dify-plugin-daemon
-#     tag: 0.6.1-local
-#   web:
-#     repository: langenius:dify-web
-#     tag: 1.14.2
-#   sendbox:
-#     repository: langenius:dify-sandbox
-#     tag: 0.2.15
-#   proxy:
-#     repository: nginx
-#     tag: 1.25.3
-#   ssrfProxy:
-#     repository: ubuntu/squid
-#     tag: 
+image:
+  api:
+    repository: langgenius/dify-api
+    tag: 1.14.2
+    # pullPolicy: IfNotPresent
+  pluginDaemon:
+    repository: langgenius/dify-plugin-daemon
+    tag: 0.6.1-local
+  web:
+    repository: langgenius/dify-web
+    tag: 1.14.2
+  sendbox:
+    repository: langgenius/dify-sandbox
+    tag: 0.2.15
+  proxy:
+    repository: nginx
+    tag: 1.25.3
+  # ssrfProxy:
+  #   repository: ubuntu/squid
+  #   tag: 
 
 ingress:
   enabled: true
@@ -36,7 +36,7 @@ ingress:
   - host: dify.local
     paths:
       - path: /
-        patyType: ImplementationSpecific
+        pathType: ImplementationSpecific
 
 api:
   extraEnv:
@@ -71,8 +71,8 @@ redis:
   global:
     storageClass: standard
   image:
-    repository: bitnamilegary/redis
-    tag: 7.2.4
+    repository: bitnamilegacy/redis
+    tag: 8.2.1
 
 postgresql:
   enabled: true
@@ -81,8 +81,8 @@ postgresql:
   global:
     storageClass: standard
   image:
-    repository: bitnamilegary/postgresql
-    tag: 16.3.0
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0
 
 weaviate:
   # TODD:
@@ -90,18 +90,18 @@ weaviate:
 
 externalS3:
   enabled: true
-  endpoint: http://your-s3:port
+  endpoint: "###ZARF_VAR_S3_ENDPOINT###"
   pathStyle: true
-  accessKey:
-  secretkey:
-  bucketName:
-    api: your-bucket
-    pluginDaemon: your-bucket
+  accessKey: "###ZARF_VAR_S3_ACCESS_KEY###"
+  secretkey: "###ZARF_VAR_S3_SECRET_KEY###"
+  # bucketName:
+  #   api: difyai
+  #   pluginDaemon: 
   useIAM: false
   region: us-east-1
 
-# minio:
-#   embedded: false
-#   persistence:
-#     enabled: true
-#     storageClass: standard
+minio:
+  embedded: false
+  persistence:
+    enabled: true
+    storageClass: standard

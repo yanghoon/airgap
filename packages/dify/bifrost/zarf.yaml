@@ -17,3 +17,10 @@ components:
           - values-bifrost.yaml
     images:
       - maximhq/bifrost:v1.5.3
+  
+  - name: bifrost-mirror
+    manifests:
+      - name: bifrost-mirror
+        namespace: dify
+        files:
+          - manifests/bifrost-mirror.yaml

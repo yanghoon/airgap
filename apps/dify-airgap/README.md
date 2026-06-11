@@ -15,7 +15,7 @@ unzip -q .tmp/dify.zip -d temp_dify
 mv temp_dify/dify-main/docker ./dify
 
 rm -rf temp_dify
-rm dify.zip
+rm .tmp/dify.zip
 ```
 
 ### Configure
@@ -50,29 +50,23 @@ vi dify/.env
 ### Setup
 
 ```bash
-curl -L https://github.com/kuroboko/dify-plugin-offline-packager/archive/refs/haeds/main.tar.gz -o packager.tar.gz
-
 mkdir -p packager
-tar -xzf packager.tar.gz -C packager
-rm packager.tar.gz
+mkdir -p packager/plugins
 
-# dify-plugin binary
-# curl -L https://github.com/langgenius/dify-plugin-daemon/releases/download/0.6.1/dify-plugin-linux-amd64 -o dify-plugin
-# chmod u+x dify-plugin && mv dify-plugin packager/bin/
-# cp packager/bin/dify-plugin version
+curl -L https://github.com/kurokobo/dify-plugin-offline-packager/archive/refs/heads/main.tar.gz | tar -xf - -C packager --strip-components=1
+curl -L https://github.com/langgenius/dify-official-plugins/archive/refs/heads/main.tar.gz | tar -xf - -C packager/plugins --strip-components=1
+```
+
+**UV**
+
+```bash
+# Mac
+brew install uv
+# brew install ca-certificates
 ```
 
 ```bash
-curl -L https://github.com/langgenius/dify-official-plugins/archive/refs/haeds/main.tar.gz -o plugins.tar.gz
-
-mkdir -p plugins
-tar -xzf plugins.tar.gz -C plugins
-rm plugins.tar.gz
-```
-
-### Packaging
-
-```bash
+# Linux
 sudo apt install -y python3-pip  # suto apt --fix-broken install
 
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -83,14 +77,23 @@ vi ~/.config/uv/uv.toml
 # ]
 ```
 
+### Packaging
+
+**Offline Packager**
+
 ```bash
-packager/bin/dify-plugin-cli-* plugin package \
-    plugins/models/openai_api_compatible
-uv run packager/scripts/packager.py \
-    --local openai_api_compatible.difypkg
+# 
+cd packager
+uv run scripts/packager.py --marketplace langgenius/openai_api_compatible:0.0.53
+
+# 
+cd packager
+uv run scripts/packager.py --local dummy.difypkg  # for dify-plugin
+bin/dify-plugin-* plugin package plugins/models/openai_api_compatible -o difypkg/openai_api_compatible.difypkg
+uv run scripts/packager.py --local difypkg/openai_api_compatible.difypkg
 ```
 
-* **models/openai_api_compatible**
+**plugins/models/openai_api_compatible**
 
 ```bash
 vi plugins/models/openai_api_compatible/pyproject.toml
