@@ -3,7 +3,7 @@ kind: ZarfPackageConfig
 metadata:
   name: rke2-harbor
   description: ""
-  version: v0.0.1
+  version: v2.13.5
 
 variables:
   - name: HARBOR_DOMAIN

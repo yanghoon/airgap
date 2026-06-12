@@ -1,12 +1,12 @@
 kind: ZarfPackageConfig
 metadata:
-  name: rke2-airgap-provisioner
+  name: rke2-init
   description: "Zarf를 활용한 에어갭 RKE2 5노드 클러스터 자동화 구축"
-  version: "0.0.1"
+  version: v1.33.10+rke2r3
 
 variables:
   - name: RKE2_VERSION
-    default: "v1.33.10+rke2r3"
+    default: v1.33.10+rke2r3
 
   - name: SERVER_IP
     description: "최초 Server 노드의 IP (미입력 시 단독 서버 동작)"
@@ -47,20 +47,19 @@ components:
         before:
           - cmd: /usr/local/bin/rke2-uninstall.sh
 
-  - name: rke2-config
+  - name: rke2-config-bootstrap
     required: true
     description: "동적 config.yaml 생성"
     files:
       - source: config.yaml.bootstrap.template
-        target: /etc/rancher/rke2/config.yaml.bootstrap
-      - source: config.yaml.template
-        target: /etc/rancher/rke2/config.yaml.join
+        target: /etc/rancher/rke2/config.yaml
     actions:
       onDeploy:
         after:
           - cmd: |
               echo "on Boostrap :"
-              echo "  sudo mv /etc/rancher/rke2/config.yaml.bootstrap /etc/rancher/rke2/config.yaml"
+              # echo "  sudo mv /etc/rancher/rke2/config.yaml.bootstrap /etc/rancher/rke2/config.yaml"
+              echo "  sudo systemctl status rke2-server.service"
               echo "  sudo systemctl enable rke2-server.service"
               echo "  sudo systemctl start  rke2-server.service"
               echo "  journalctl -u rke2-server -f"
@@ -70,11 +69,20 @@ components:
               echo "  export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
               echo "  sudo -E zarf tools monitor"
 
+  - name: rke2-config
+    required: true
+    description: "동적 config.yaml 생성"
+    files:
+      - source: config.yaml.template
+        target: /etc/rancher/rke2/config.yaml
+    actions:
+      onDeploy:
+        after:
           - cmd: |
               echo "on Join (Server/Agent):"
               echo "  sudo cat /var/lib/rancher/rke2/server/token  # rke2 token list"
               echo
-              echo "  sudo mv /etc/rancher/rke2/config.yaml.join /etc/rancher/rke2/config.yaml"
+              # echo "  sudo mv /etc/rancher/rke2/config.yaml.join /etc/rancher/rke2/config.yaml"
               echo "  sudo systemctl enable rke2-server.service"
               echo "  sudo systemctl start  rke2-server.service"
               echo
