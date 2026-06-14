@@ -13,10 +13,11 @@ res="$tmp_path/res.json"
 mkdir -p .tmp
 
 echo
-pw=$(base64 <<< $(read -s -p "password: "))
+read -s -p "password: " PWD
+pw=$(echo -n "$PWD" | base64)
 curl -X POST "http://dify.local/console/api/login" \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@email.com","password":"YWRtaW4K","language":"ko-KR","remember_me":false}' \
+  -d "{\"email\":\"admin@email.com\",\"password\":\"$pw\",\"language\":\"ko-KR\",\"remember_me\":false}" \
   -c "$cookie" -v
 
 # https://github.com/langgenius/dify/blob/main/api/controllers/console/workspace/plugin.py#L306-L321
@@ -30,7 +31,7 @@ curl -X POST "http://dify.local/console/api/workspaces/current/plugin/upload/pkg
 
 echo
 csrf=$(awk '$6 == "csrf_token" {print $7}' $cookie)
-plugin_id=$(j  -r '.unique_identifier' $res)
+plugin_id=$(jq  -r '.unique_identifier' "$res")
 curl -X POST "http://dify.local/console/api/workspaces/current/plugin/install/pkg" \
   -H "X-Csrf-Token: $csrf" \
   -H "Content-Type: application/json" \

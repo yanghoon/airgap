@@ -4,6 +4,13 @@ metadata:
   version: 1.14.1
 
 components:
+  # - name: bifrost-mirror
+  #   manifests:
+  #     - name: bifrost-mirror
+  #       namespace: dify
+  #       files:
+  #         - manifests/bifrost-mirror.yaml
+
   - name: bifrost
     description: "Bifrost Gateway for Dify"
     required: false
@@ -15,12 +22,11 @@ components:
         gitPath: helm-charts/bifrost
         valuesFiles:
           - values-bifrost.yaml
-    images:
-      - maximhq/bifrost:v1.5.3
-  
-  - name: bifrost-mirror
     manifests:
       - name: bifrost-mirror
         namespace: dify
         files:
           - manifests/bifrost-mirror.yaml
+    images:
+      - maximhq/bifrost:v1.5.3
+  

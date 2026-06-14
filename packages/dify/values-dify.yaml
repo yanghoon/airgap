@@ -45,7 +45,7 @@ api:
       value: "false"
 
 pluginDaemon:
-  envs:
+  extraEnv:
     # - name: SERVER_PORT
     #   value: "5002"
     # - name: MAX_PLUGIN_PACKAGE_SIZE
@@ -60,6 +60,9 @@ pluginDaemon:
     #   value: "0.0.0.0"
     # - name: PLUGIN_REMOTE_INSTALLING_PORT
     #   value: "5003"
+  persistence:
+    persistentVolumeClaim:
+      accessModes: ReadWriteOnce #ReadWriteMany
 
 worker:
   extraEnv:
@@ -93,7 +96,7 @@ externalS3:
   endpoint: "###ZARF_VAR_S3_ENDPOINT###"
   pathStyle: true
   accessKey: "###ZARF_VAR_S3_ACCESS_KEY###"
-  secretkey: "###ZARF_VAR_S3_SECRET_KEY###"
+  secretKey: "###ZARF_VAR_S3_SECRET_KEY###"
   # bucketName:
   #   api: difyai
   #   pluginDaemon: 

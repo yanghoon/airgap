@@ -36,7 +36,21 @@ variables:
     prompt: true
 
 components:
-  - name: dify-core
+  - name: minio
+    required: false
+    description: "Install internal MinIO? (Select N if using external S3)"
+    charts:
+      - name: minio
+        url: https://charts.bitnami.com/bitnami
+        version: 17.0.21
+        namespace: dify
+        valuesFiles:
+          - values-minio.yaml
+    images:
+      - bitnamilegacy/minio:2025.7.23
+      - bitnamilegacy/minio-object-browser:2.0.2
+
+  - name: dify
     required: true
     charts:
       - name: dify
@@ -61,16 +75,3 @@ components:
     images:
       - maximhq/bifrost:v1.5.3
   
-  - name: minio
-    required: false
-    description: "Install internal MinIO? (Select N if using external S3)"
-    charts:
-      - name: minio
-        url: https://charts.bitnami.com/bitnami
-        version: 17.0.21
-        namespace: dify
-        valuesFiles:
-          - values-minio.yaml
-    images:
-      - bitnamilegacy/minio:2025.7.23
-      - bitnamilegacy/minio-object-browser:2.0.2

@@ -9,7 +9,7 @@ pkg_path="$pkg"
 pkg_name="$(basename $pkg)"
 
 setup_environment() {
-    mkdir -p packager packager/plugins
+    mkdir -p packager
 
     if [[ -d packager && "$(ls -A packager)" ]]; then
         echo "Skip to download packager"
@@ -17,6 +17,7 @@ setup_environment() {
         curl -L https://github.com/kurokobo/dify-plugin-offline-packager/archive/refs/heads/main.tar.gz | tar -xf - -C packager --strip-components=1
     fi
 
+    mkdir -p packager/plugins
     if [[ -d packager/plugins && "$(ls -A packager/plugins)" ]]; then
         echo "Skip to download official plugins"
     else
@@ -27,7 +28,7 @@ setup_environment() {
 # run_local_packager() {
 download_dify_plugin_cli() {
     # local file="$1"
-    (cd packager && uv run scripts/packager.py --local "dummy.difypkg" > /dev/null)
+    (cd packager && uv run scripts/packager.py --local "dummy.difypkg" > /dev/null 2>&1)
 }
 
 edit_dependencies() {
@@ -35,14 +36,15 @@ edit_dependencies() {
 }
 
 package_plugin() {
-    (cd packager && bin/dify-plugin-* plugin package "$pkg_path" -o difypkg/"$pkg_name".difypkg)
-    (cd packager && uv run script/packager.py --local difypkg/"$pkg_name".difypkg)
+    local local_path=`echo $pkg_path | cut -d'/' -f2-`
+    (cd packager && bin/dify-plugin-* plugin package "$local_path" -o difypkg/"$pkg_name".difypkg)
+    (cd packager && uv run scripts/packager.py --local difypkg/"$pkg_name".difypkg)
     cp packager/difypkg/"$pkg_name"-offline.difypkg .
 }
 
 main() {
     setup_environment
-    download_dify_plugin_cli
+    download_dify_plugin_cli || true
     # run_local_packager "dummy.difypkg" || true
     # edit_dependencies
     package_plugin
