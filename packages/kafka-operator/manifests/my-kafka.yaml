@@ -9,8 +9,8 @@ spec:
   replicas: 3
   config:
     min.insync.replicas: 2
-    unclean.leader.election.enable: false
-  #   retention.ms: 86400000
+    # unclean.leader.election.enable: false
+    # retention.ms: 86400000
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
@@ -53,22 +53,23 @@ spec:
         port: 9093
         type: internal
         tls: true
+
       # https://strimzi.io/blog/2019/05/23/accessing-kafka-part-5/
       - name: external
         port: 9094
-        tls: true
-        # type: nodeport
         type: ingress
+        # type: nodeport
+        tls: true
         configuration:
           bootstrap:
-            host: bootstrap.my-cluster.kafka.local
+            host: my-cluster.kafka.local
           brokers:
             - broker: 0
-              host: broker-0.my-cluster.kafka.local
+              host: broker-0-my-cluster.kafka.local
             - broker: 1
-              host: broker-1.my-cluster.kafka.local
+              host: broker-1-my-cluster.kafka.local
             - broker: 2
-              host: broker-2.my-cluster.kafka.local
+              host: broker-2-my-cluster.kafka.local
 
     config:
       offsets.topic.replication.factor: 1
@@ -92,4 +93,3 @@ spec:
     topicOperator: {}
     userOperator: {}
 ---
-

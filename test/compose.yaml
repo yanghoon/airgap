@@ -13,9 +13,10 @@ services:
       KAFKA_OPTS: >
         -X security.protocol=SSL
         -X ssl.endpoint.identification.algorithm=none -X enable.ssl.certificate.verification=0
-        -d all
+        -X retries=2147483647
+      # -d all
     extra_hosts:
-      bootstrap.my-cluster.kafka.local: host-gateway
-      broker-0.my-cluster.kafka.local: host-gateway
-      broker-1.my-cluster.kafka.local: host-gateway
-      broker-2.my-cluster.kafka.local: host-gateway
+      my-cluster.kafka.local: host-gateway
+      broker-0-my-cluster.kafka.local: host-gateway
+      broker-1-my-cluster.kafka.local: host-gateway
+      broker-2-my-cluster.kafka.local: host-gateway

@@ -22,7 +22,7 @@ echo "=========================================="
 START_TIME=$(date +%s.%N)
 
 # 파이프라인을 통한 정량 로그 전송
-kcat -b $KAFKA_BROKER -L
+kcat -b $KAFKA_BROKER $KAFKA_OPTS -L
 {
   for i in $(seq 1 $TOTAL_COUNT); do
       TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
