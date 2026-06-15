@@ -1,32 +1,16 @@
-# ---
-# apiVersion: stroage.k8s.io/v1
-# kind: StorageClass
-# metadata:
-#   name: local-storage
-# provisioner: kubernetes.io/no-provisioner
-# volumeBindingMode: WaitForFirstConsumer
-# ---
-# apiVersion: v1
-# kind: PersistentVolume
-# metadata:
-#   name: local-pv-kafka-0
-# spec:
-#   capacity:
-#     storage: 1Gi
-#   accessModes:
-#     - ReadWriteOnce
-#   persistentVolumeReclaimPolicy: Retain
-#   storageClassName: local-storage
-#   local:
-#     path: ###KAFKA_0_PV_PATH###
-#   nodeAffinity:
-#     required:
-#       nodeSelectorTerms:
-#         - matchExpressions:
-#             - key: kubernetes.io/hostname
-#               operator: In
-#               values:
-#                 - ###KAFKA_0_NODE_NAME###
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: test-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 6
+  replicas: 3
+  config:
+    min.insync.replicas: 2
+    unclean.leader.election.enable: false
+  #   retention.ms: 86400000
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
@@ -69,15 +53,15 @@ spec:
         port: 9093
         type: internal
         tls: true
+      # https://strimzi.io/blog/2019/05/23/accessing-kafka-part-5/
       - name: external
         port: 9094
-        # type: nodeport
-        # tls: false
-        type: ingress
         tls: true
+        # type: nodeport
+        type: ingress
         configuration:
           bootstrap:
-            host: my-cluster.kafka.local
+            host: bootstrap.my-cluster.kafka.local
           brokers:
             - broker: 0
               host: broker-0.my-cluster.kafka.local
@@ -101,6 +85,11 @@ spec:
     #     kafka.network.RequestChannel$: TRACE
     #     kafka.server.KafkaApis: TRACE
 
+  # https://strimzi.io/blog/2020/06/15/cruise-control/
+  cruiseControl: {}
+
   entityOperator:
     topicOperator: {}
     userOperator: {}
+---
+

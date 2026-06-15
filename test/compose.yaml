@@ -1,16 +1,21 @@
 services:
   log-generator:
-    image: busybox:1.36
+    image: confluentinc/cp-kcat:8.1.3
     volumes:
       - ./scripts/logger.sh:/entrypoint.sh
     entrypoint: >
       /bin/sh -c /entrypoint.sh
     environment:
       TEST_NAME: Exact_Count_Delay_Test
-      TOTAL_COUNT: 100
-      KAFKA_BROKER: my-cluster.kafka.local:443
+      TOTAL_COUNT: 100  # 10 sec = 100 msg * 0.1 msg/sec
+      KAFKA_BROKER: bootstrap.my-cluster.kafka.local:443
       KAFKA_TOPIC: test-topic
       KAFKA_OPTS: >
         -X security.protocol=SSL
-        -X ssl.enpoint.identification.algorithm=none -X enable.ssl.certificate.verification=0
+        -X ssl.endpoint.identification.algorithm=none -X enable.ssl.certificate.verification=0
         -d all
+    extra_hosts:
+      bootstrap.my-cluster.kafka.local: host-gateway
+      broker-0.my-cluster.kafka.local: host-gateway
+      broker-1.my-cluster.kafka.local: host-gateway
+      broker-2.my-cluster.kafka.local: host-gateway
