@@ -1,30 +1,73 @@
+apiVersion: v11
+kind: ServiceAccount
+metadata:
+  name: flink-sa
+  namespace: flink-job
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flink-role
+  namespace: flink-job
+rules:
+- apiGroups: [""]
+  resources: ["pods", "configmaps"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "deployments/finalizers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flink-role-binding
+  namespace: flink-job
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flink-role
+subjects:
+- kind: ServiceAccount
+  name: flink-sa
+  # namespace: flink-job
+---
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
   name: flink-quickstart
-  namespace: default
+  namespace: flink-job
 spec:
   image: flink:1.20
   flinkVersion: v1_20
   flinkConfiguration:
-    taskmanager.numberOfTaskSlots: "2"
-    parallelism.default: "2"
-  serviceAccount: flink-service-account
+    taskmanager.numberOfTaskSlots: 1
+    parallelism.default: 1
+  serviceAccount: flink-sa
   jobManager:
     resource:
-      memory: "1024m"
+      memory: 1024m
       cpu: 1
   taskManager:
     resource:
-      memory: "1024m"
+      memory: 1024m
       cpu: 1
   job:
     jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
-    entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
+    # entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
     args:
-      - "--input"
-      - "/opt/flink/examples/streaming/statemachine/event-data"
-    parallelism: 2
+      - --kafka-topic
+      - test-topic
+      - --brokers
+      - my-cluster-kafka-brokers.kafka-operator.svc:9092
+      # - --input
+      # - /opt/flink/examples/streaming/statemachine/event-data
+    parallelism: 1
     upgradeMode: savepoint
     state: running
     savepointTriggerNonce: 0
+  
+  ingress:
+    template: flink.local/{{namespace}}/{{name}}(/|$)(.*)
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2

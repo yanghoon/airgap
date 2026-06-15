@@ -4,6 +4,7 @@ metadata:
   name: slim-kafka-print-job-env
 data:
   SMALLRYE_CONFIG_PROFILE: k8s
+  # SMALLRYE_CONFIG_LOCATIONS: file:/opt/flink/config/
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -15,9 +16,16 @@ data:
       kafka:
         topic: test-topic
         options:
-          format: raw
-          scan.startup.mode: earliest-offset
+          properties.group.id: flink-simple-kafka-print-job
           properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
+          scan.startup.mode: earliest-offset  # latest-offset
+          format: raw
+
+          # properties.security.protocol: SSL
+          # properties.ssl.truststore.type: PEM
+          # properties.ssl.endpoint.identification.algorithm: " "
+          # properties.ssl.certificate.verification: 0
+          # properties.ssl.truststore.certificate: classpath:certs/kafka.pem  # Replaced at Runtime
     job:
       pipelines:
         - classpath:sql/data.sql

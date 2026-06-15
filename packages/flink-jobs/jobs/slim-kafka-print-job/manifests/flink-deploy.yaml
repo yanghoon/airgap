@@ -10,13 +10,26 @@ spec:
     taskmanager.numberOfTaskSlots: 1
     parallelism.default: 1
 
+    # for Task Manager HA
+    restart-strategy.type: exponential-delay
+    restart-strategy.exponential-delay.initial-backoff: 10s
+    restart-strategy.exponential-delay.max-backoff: 1m
+    # restart-strategy.exponential-delay.backoff-multiplier: 2.0
+    # restart-strategy.exponential-delay.jitter-factor: 0.1
+
+    # for Kafka ACK
+    execution.checkpointing.mode: EXACTLY_ONCE
+    execution.checkpointing.interval: 10s
+    execution.checkpointing.min-pause: 5s
+    execution.checkpointing.max-concurrent-checkpoints: 1
+
   ingress:
     tempalte: flink.local/{{namespace}}/{{name}}(/|$)(.*)
     className: nginx
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /$2
 
-  serviceAccount: flink
+  serviceAccount: flink-sa
   podTemplate:
     metadata:
       labels:
