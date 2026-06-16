@@ -5,6 +5,7 @@ metadata:
 data:
   SMALLRYE_CONFIG_PROFILE: k8s
   # SMALLRYE_CONFIG_LOCATIONS: file:/opt/flink/config/
+  ENABLE_BUILT_IN_PLUGINS: flink-s3-fs-presto-1.20.4.jar
 ---
 apiVersion: v1
 kind: ConfigMap

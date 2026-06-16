@@ -31,8 +31,10 @@ build:
       #     - command: ["./gradlew", ":slim-kafka-print-job:clean", ":slim-kafka-print-job:shadowJar"]
 
 manifests:
-  rawYaml:
-    - manifests/*.yaml
+  kustomize:
+    paths: ["manifests"]
+  # rawYaml:
+  #   - manifests/*.yaml
 
 resourceSelector:
   allow:
