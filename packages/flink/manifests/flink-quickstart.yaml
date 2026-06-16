@@ -1,4 +1,4 @@
-apiVersion: v11
+apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: flink-sa
@@ -29,15 +29,15 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: flink-sa
-  # namespace: flink-job
+  namespace: flink-job
 ---
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: flink-quickstart
+  name: quickstart
   namespace: flink-job
 spec:
-  image: flink:1.20
+  image: flink:1.20.4-java17
   flinkVersion: v1_20
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: 1
@@ -62,9 +62,9 @@ spec:
       # - --input
       # - /opt/flink/examples/streaming/statemachine/event-data
     parallelism: 1
-    upgradeMode: savepoint
+    upgradeMode: stateless
     state: running
-    savepointTriggerNonce: 0
+    # savepointTriggerNonce: 0
   
   ingress:
     template: flink.local/{{namespace}}/{{name}}(/|$)(.*)

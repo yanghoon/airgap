@@ -8,7 +8,7 @@ services:
     environment:
       TEST_NAME: Exact_Count_Delay_Test
       TOTAL_COUNT: 100  # 10 sec = 100 msg * 0.1 msg/sec
-      KAFKA_BROKER: bootstrap.my-cluster.kafka.local:443
+      KAFKA_BROKER: my-cluster.kafka.local:443
       KAFKA_TOPIC: test-topic
       KAFKA_OPTS: >
         -X security.protocol=SSL
