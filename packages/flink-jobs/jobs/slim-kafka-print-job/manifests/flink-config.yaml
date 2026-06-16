@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: slim-kafka-print-job-env
+  namespace: flink-job
 data:
   SMALLRYE_CONFIG_PROFILE: k8s
   # SMALLRYE_CONFIG_LOCATIONS: file:/opt/flink/config/
@@ -11,6 +12,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: slim-kafka-print-job-config
+  namespace: flink-job
 data:
   application.yaml: |
     vars:

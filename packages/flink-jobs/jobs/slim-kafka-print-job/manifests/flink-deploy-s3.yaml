@@ -1,0 +1,11 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: slim-kafka-print-job
+  namespace: flink-job
+spec:
+  flinkConfiguration:
+    execution.checkpointing.dir: s3://flink/checkpoint
+    execution.checkpointing.savepoint-dir: s3://flink/savepoint
+    s3.endpoint: minio:9000
+    s3.path-style-access: "true"

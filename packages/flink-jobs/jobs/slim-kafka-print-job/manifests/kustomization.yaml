@@ -5,10 +5,13 @@ resources:
   - flink-deploy.yaml
   - flink-config.yaml
 
+patches:
+  - path: flink-deploy-s3.yaml
+
 secretGenerator:
   - name: simple-kafka-print-job-sec
     namespace: flink-job
     envs:
-      - secrets.env
+      - secret.env
     options:
       disableNameSuffixHash: true
