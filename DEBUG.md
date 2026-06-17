@@ -82,3 +82,9 @@ unqualified-search-registries = ["docker.io"]
 location = "harbor.local"
 insecure = true
 ```
+
+### Render
+
+```bash
+skaffold render --offline --digest-source=none
+```

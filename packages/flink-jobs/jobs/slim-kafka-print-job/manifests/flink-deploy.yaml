@@ -5,6 +5,7 @@ metadata:
   namespace: flink-job
 spec:
   image: slim-kafka-print-job
+
   flinkVersion: v1_20
   flinkConfiguration:
     taskmanager.numberOfTaskSlots: 1
@@ -40,6 +41,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: slim-kafka-print-job-env
+            - secretRef:
+                name: slim-kafka-print-job-sec
           volumeMounts:
             - name: config-volume
               mountPath: /opt/flink/config
