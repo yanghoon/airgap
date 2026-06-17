@@ -29,8 +29,10 @@ public class SqlManager {
 
     private List<String> renderList(List<String> paths) {
         if (paths == null) return List.of();
-        return paths.stream().map(path -> 
-            templateEngine.render(ResourceLoader.load(path), templateContext.getVars())
+        return paths.stream()
+            .map(path -> ResourceLoader.load(path))
+            .flatMap(script -> ScriptUtils.splitSqlScript(script).stream())
+            .map(statement -> templateEngine.render(statement, templateContext.getVars())
         ).collect(Collectors.toList());
     }
 

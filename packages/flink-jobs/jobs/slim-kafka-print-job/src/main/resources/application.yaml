@@ -7,8 +7,9 @@ smallrye:
 job:
   name: slim-kafka-print-job
   schemas:
-    - classpath:sql/schema_source.sql
-    - classpath:sql/schema_sink.sql
+    - classpath:sql/schema.sql
+    # - classpath:sql/schema_source.sql
+    # - classpath:sql/schema_sink.sql
   pipelines:
     - classpath:sql/data.sql
     # - classpath:sql/data_2.sql
