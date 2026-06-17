@@ -13,6 +13,7 @@ include(":starters:flink-test")
 
 // Starters - Libraries
 include(":starters:flink-kafka")
+include(":starters:flink-iceberg")
 
 // Libraries
 include(":jobs:common")

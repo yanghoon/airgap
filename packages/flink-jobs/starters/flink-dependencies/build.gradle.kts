@@ -11,6 +11,7 @@ dependencies {
 
     var kafkaVersion = "3.4.0-1.20"
     var icebergVersion = "1.8.1"
+    var hadoopVersion = "3.3.1"
 
     var smallryeVersion = "3.17.2"      // MicroProfile
     var commonsTextVersion = "1.11.0"  // Template Engine
@@ -32,7 +33,10 @@ dependencies {
         api("org.apache.flink:flink-connector-kafka:${kafkaVersion}")
 
         // Iceberg Flink
-        api("org.apache.iceberg:iceberg-flink-runtime-${flinkVersion}:${icebergVersion}")
+        api("org.apache.iceberg:iceberg-flink-runtime-1.20:${icebergVersion}")
+        api("org.apache.iceberg:iceberg-aws-bundle:${icebergVersion}")
+        api("org.apache.flink:flink-connector-files:${flinkVersion}")
+        api("org.apache.hadoop:hadoop-client:${hadoopVersion}")
 
 
         /** Common **/
