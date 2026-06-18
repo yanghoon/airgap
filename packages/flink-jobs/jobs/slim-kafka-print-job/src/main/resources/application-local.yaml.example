@@ -1,0 +1,35 @@
+vars:
+  kafka:
+    topic: test-topic
+    options:
+      format: raw
+      scan.startup.mode: earliest-offset
+      
+      properties.group.id: slim-kafka-print-job
+      properties.bootstrap.servers: redpanda:29092
+      # properties.bootstrap.servers: kafka.local:443
+      # properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
+      # properties.security.protocol: SSL
+      # properties.ssl.truststore.type: PEM
+      # properties.ssl.truststore.certificates: classpath:certs/kafka.pem
+      # properties.ssl.endpoint.identification.algorithm: " "
+      # properties.ssl.certificate.verification: 0
+  
+  iceberg:
+    options:
+      # connector: iceberg
+      # catalog-type: rest
+      catalog-name: iceberg
+      catalog-datebase: default
+      # catalog-table: test
+      uri: http://iceberg-rest.local
+      warehouse: s3://data-lake/warehouse
+      format: PARQUET
+      format_version: 2
+
+      io-impl: org.apache.iceberg.aws.s3.S3FileIO
+      s3.endpoint: http://minio:9000
+      s3.access-key-id: access-key
+      s3.secret-access-key: secret-key
+      s3.path-style-access: true
+      client.region: us-east-1

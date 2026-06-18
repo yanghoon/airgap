@@ -24,6 +24,8 @@ spec:
     execution.checkpointing.min-pause: 5s
     execution.checkpointing.max-concurrent-checkpoints: 1
 
+    pipeline.default-kryo-serializers: class:org.apache.iceberg.GenericDataFile,serializer:com.esotericsoftware.kryo.serializers.JavaSerializer;class:org.apache.iceberg.GenericManifestFile,serializer:com.esotericsoftware.kryo.serializers.JavaSerializer
+
   ingress:
     template: flink.local/{{namespace}}/{{name}}(/|$)(.*)
     className: nginx

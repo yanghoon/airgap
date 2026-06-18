@@ -1,4 +1,4 @@
-CREATE TABLE source (
+CREATE TABLE kafka (
     `log_line` STRING
 ) WITH (
     'connector' = 'kafka',
@@ -15,8 +15,9 @@ CREATE TABLE iceberg (
     ${format-map: path=iceberg.options, indent=4}
 );
 
-CREATE TABLE sink (
+CREATE TABLE print (
     `log_line` STRING
+    `insert_datetime` TIMESTAMP
 ) WITH (
     'connector' = 'print'
 );

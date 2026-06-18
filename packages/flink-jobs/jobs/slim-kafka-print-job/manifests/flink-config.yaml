@@ -29,9 +29,26 @@ data:
           # properties.ssl.endpoint.identification.algorithm: " "
           # properties.ssl.certificate.verification: 0
           # properties.ssl.truststore.certificate: classpath:certs/kafka.pem  # Replaced at Runtime
-    job:
-      pipelines:
-        - classpath:sql/data.sql
-        - file:/opt/flink/config/data.sql
-  data.sql: |
-    INSERT INTO sink SELECT CONCAT(log_line, ' $$$$') FROM source
+      iceberg:
+        options:
+          catalog-name: iceberg
+          catalog-database: default
+          catalog-table: logs          
+          uri: http://iceberg-rest.iceberg-system.svc:8181
+          warehouse: s3://data-lake/warehouse
+          format: PARQUET
+          format_version: 2
+
+          io-impl: org.apache.iceberg.aws.s3.S3FileIO
+          s3.endpoint: http://minio:9000
+          s3.access-key-id: minioadmin
+          s3.secret-access-key: minioadmin
+          s3.path-style-access: true
+          client.region: us-east-1
+
+  #   job:
+  #     pipelines:
+  #       - classpath:sql/data.sql
+  #       - file:/opt/flink/config/data.sql
+  # data.sql: |
+  #   INSERT INTO sink SELECT CONCAT(log_line, ' $$$$') FROM source

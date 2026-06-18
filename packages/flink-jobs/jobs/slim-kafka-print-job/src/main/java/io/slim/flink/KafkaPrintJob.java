@@ -1,5 +1,6 @@
 package io.slim.flink;
 
+import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.slf4j.Logger;
@@ -13,7 +14,10 @@ public class KafkaPrintJob {
     private static Logger log = LoggerFactory.getLogger(KafkaPrintJob.class);
 
     public static void main(String[] args) {
-        var env = StreamExecutionEnvironment.getExecutionEnvironment();
+        //TODO: Remove this code
+        var config = GlobalConfiguration.loadConfiguration(); 
+        var env = StreamExecutionEnvironment.getExecutionEnvironment(config);
+        // var env = StreamExecutionEnvironment.getExecutionEnvironment();
         var tableEnv = StreamTableEnvironment.create(env);
 
         // Create job context and load external configurations
