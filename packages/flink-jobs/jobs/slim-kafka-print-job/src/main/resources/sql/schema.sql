@@ -16,7 +16,7 @@ CREATE TABLE iceberg (
 );
 
 CREATE TABLE print (
-    `log_line` STRING
+    `log_line` STRING,
     `insert_datetime` TIMESTAMP
 ) WITH (
     'connector' = 'print'

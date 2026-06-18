@@ -18,9 +18,14 @@ dependencies {
 }
 
 tasks.shadowJar {
+
+    mergeServiceFiles()
+
     manifest {
         attributes("Main-Class" to "io.slim.flink.KafkaPrintJob")
     }
+
+    isZip64 = true
 }
 
 // application {
