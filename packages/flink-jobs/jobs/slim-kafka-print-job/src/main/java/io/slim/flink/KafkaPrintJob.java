@@ -24,7 +24,7 @@ public class KafkaPrintJob {
         var context = JobContext.create();
 
         // Load certificates if needed and generate group id
-        context.getTemplateContext().computeIfPresent("kafka.options.properties.ssl.certificates", ResourceLoader::load);
+        context.getTemplateContext().computeIfPresent("kafka.options.properties.ssl.truststore.certificates", ResourceLoader::load);
         // context.getTemplateContext().computeIfPresent("kafka.options.properties.group.id", v -> "local-" + System.currentTimeMillis());
 
         var sqls = context.getSqlManager();

@@ -7,11 +7,10 @@ vars:
       
       properties.group.id: slim-kafka-print-job
       properties.bootstrap.servers: redpanda:29092
-      # properties.bootstrap.servers: kafka.local:443
-      # properties.bootstrap.servers: my-cluster-kafka-bootstrap.kafka-operator:9092
+      # properties.bootstrap.servers: my-cluster.kafka.local:443
       # properties.security.protocol: SSL
       # properties.ssl.truststore.type: PEM
-      # properties.ssl.truststore.certificates: classpath:certs/kafka.pem
+      # properties.ssl.truststore.certificates: classpath:certs/kafka.pem  # secrets/<cluster_name>-cluster-ca-cert
       # properties.ssl.endpoint.identification.algorithm: " "
       # properties.ssl.certificate.verification: 0
   
@@ -28,8 +27,8 @@ vars:
       format_version: 2
 
       io-impl: org.apache.iceberg.aws.s3.S3FileIO
-      s3.endpoint: http://minio:9000
-      s3.access-key-id: access-key
-      s3.secret-access-key: secret-key
+      s3.endpoint: http://minio.local  # by Ingress
+      s3.access-key-id: minioadmin
+      s3.secret-access-key: minioadmin
       s3.path-style-access: true
       client.region: us-east-1

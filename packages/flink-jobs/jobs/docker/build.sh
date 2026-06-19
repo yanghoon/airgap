@@ -23,7 +23,7 @@ echo "========================================"
 "$ROOT_DIR/gradlew" -p "$ROOT_DIR" ":jobs:$JOB_NAME:clean" ":jobs:$JOB_NAME:shadowJar"
 
 # 5. Docker 빌드 시에도 Dockerfile 위치를 절대 경로로 지정
-docker build --tag="$IMAGE" -f "$SCRIPT_DIR/Dockerfile.common" .
+docker build --tag="$IMAGE" -f "$SCRIPT_DIR/Dockerfile.common" . --no-cache
 
 # 6. Skaffold가 push를 요구할 경우(push: true) push 수행
 if [ "${PUSH_IMAGE:-false}" = "true" ]; then

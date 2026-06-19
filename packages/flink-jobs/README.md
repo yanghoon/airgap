@@ -44,3 +44,27 @@ dependencies {
     shadowImplementation(project(":jobs:common"))
 }
 ```
+
+## Development
+
+### VS Code
+
+```json
+// source : launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "KafkaPrintJob",
+            "request": "launch",
+            "mainClass": "io.slim.flink.KafkaPrintJob",
+            "projectName": "slim-kafka-print-job",
+            "env": {
+                "FLINK_CONF_DIR": "${workspaceFolder}/packages/flink-jobs"
+            },
+            "vmArgs": "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED"
+        }
+    ]
+}
+```

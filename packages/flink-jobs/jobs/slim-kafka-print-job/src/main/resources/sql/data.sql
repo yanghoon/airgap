@@ -2,6 +2,8 @@ INSERT INTO `iceberg`
 SELECT *, CURRENT_TIMESTAMP
   FROM kafka;
 
-INSERT INTO `print`
-SELECT *, CURRENT_TIMESTAMP
-  FROM `iceberg`;
+INSERT INTO `print` SELECT * FROM `iceberg`;
+
+-- INSERT INTO `print`
+-- SELECT *, CURRENT_TIMESTAMP
+--   FROM kafka;

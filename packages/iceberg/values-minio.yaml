@@ -6,6 +6,13 @@ console:
   image:
     repository: bitnamilegacy/minio-object-browser
     tag: 2.0.2
+  ingress:
+    enabled: true
+    hostname: minio-ui.local
+
+ingress:
+  enabled: true
+  # hostname: minio.local
 
 auth:
   rootUser: "###ZARF_VAR_ICEBERG_S3_ACCESS_KEY###"

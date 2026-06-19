@@ -7,4 +7,5 @@ dependencies {
 
     api("org.apache.flink:flink-streaming-java")
     api("org.apache.flink:flink-clients")
+    api("org.apache.flink:flink-runtime-web")
 }

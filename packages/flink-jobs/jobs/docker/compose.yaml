@@ -1,3 +1,31 @@
+x-extra-hosts: &hosts
+# for Iceberg
+- iceberg-rest.local:host-gateway
+- minio.local:host-gateway
+# for Kafka
+- redpanda:host-gateway
+- my-cluster.kafka.local:host-gateway
+- broker-0-my-cluster.kafka.local:host-gateway
+- broker-1-my-cluster.kafka.local:host-gateway
+- broker-2-my-cluster.kafka.local:host-gateway
+
+x-flink-properties: &flink-properties |
+  jobmanager.rpc.address: jobmanager
+  parallelism.default: 1
+  jobmanager.numberOfTaskSlots: 1
+
+  taskmanager.numberOfTaskSlots: 1
+  parallelism.default: 1
+
+  execution.checkpointing.mode: EXACTLY_ONCE
+  execution.checkpointing.interval: 10s
+  execution.checkpointing.min-pause: 5s
+  execution.checkpointing.max-concurrent-checkpoints: 1
+
+  pipeline.default-kryo-serializers: class:org.apache.iceberg.GenericDataFile,serializer:com.esotericsoftware.kryo.serializers.JavaSerializer;class:org.apache.iceberg.GenericManifestFile,serializer:com.esotericsoftware.kryo.serializers.JavaSerializer
+
+  rest.port: 8081
+
 services:
   jobmanager:
     image: ${FLINK_IMAGE:?FLINK_IMAGE requied(.env)}
@@ -6,20 +34,17 @@ services:
     command: standalone-job --job-classname ${MAIN_CLASS:?MAIN_CLASS required(.env)}
     ports:
       - 8081:8081  # Flink Web UI Port
-    extra_hosts:
-      - redpanda:host-gateway
     environment:
-      FLINK_PROPERTIES: |
-        jobmanager.rpc.address: jobmanager
-        parallelism.default: 1
+      FLINK_PROPERTIES: *flink-properties
+    extra_hosts: *hosts
   
   taskmanager:
     image: ${FLINK_IMAGE:?FLINK_IMAGE requied(.env)}
     command: taskmanager
-    extra_hosts:
-      - redpanda:host-gateway
     environment:
-      FLINK_PROPERTIES: |
-        jobmanager.rpc.address: jobmanager
-        parallelism.default: 1
-        jobmanager.numberOfTaskSlots: 1
+      FLINK_PROPERTIES: *flink-properties
+      # FLINK_PROPERTIES: |
+      #   jobmanager.rpc.address: jobmanager
+      #   parallelism.default: 1
+      #   jobmanager.numberOfTaskSlots: 1
+    extra_hosts: *hosts

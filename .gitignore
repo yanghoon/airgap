@@ -13,6 +13,9 @@ build
 .env
 secret.env
 
+# Flink Job
+application-local.yaml
+
 # Text Embeddings
 **/models/
 **/dify/

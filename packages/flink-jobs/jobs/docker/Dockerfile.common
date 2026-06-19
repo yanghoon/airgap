@@ -9,4 +9,9 @@ WORKDIR /opt/flink
 COPY --chown=flink:flink ./build/libs/*-all.jar /opt/flink/usrlib/app.jar
 
 # Expose app.jar to the AppClassLoader so Flink's HadoopUtils can see Hadoop classes
-ENV HADOOP_CLASSPATH="/opt/flink/usrlib/app.jar"
+# ENV HADOOP_CLASSPATH="/opt/flink/usrlib/app.jar"
+# USER root
+# RUN wget -qO /opt/flink/lib/hadoop-client-api-3.3.4.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.4/hadoop-client-api-3.3.4.jar && \
+#     wget -qO /opt/flink/lib/hadoop-client-runtime-3.3.4.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-client-runtime/3.3.4/hadoop-client-runtime-3.3.4.jar && \
+#     chown flink:flink /opt/flink/lib/hadoop-client-*.jar
+# USER flink

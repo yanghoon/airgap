@@ -25,9 +25,9 @@
             "mainClass": "io.slim.flink.KafkaPrintJob",
             "projectName": "slim-kafka-print-job",
             "env": {
-                "FLINK_CONF_DIR": "${workspaceFolder}"
+                "FLINK_CONF_DIR": "${workspaceFolder}/packages/flink-jobs"
             },
-            "vmArgs": ""
+            "vmArgs": "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED"
         },
         {
             "type": "java",

@@ -20,6 +20,7 @@ dependencies {
         // Flink Core
         api("org.apache.flink:flink-streaming-java:${flinkVersion}")
         api("org.apache.flink:flink-clients:${flinkVersion}")
+        api("org.apache.flink:flink-runtime-web:${flinkVersion}")
 
         // Flink Table
         api("org.apache.flink:flink-table-api-java:${flinkVersion}")
