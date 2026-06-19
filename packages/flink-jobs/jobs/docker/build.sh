@@ -25,6 +25,21 @@ echo "========================================"
 # 5. Docker 빌드 시에도 Dockerfile 위치를 절대 경로로 지정
 docker build --tag="$IMAGE" -f "$SCRIPT_DIR/Dockerfile.common" . --no-cache
 
+echo "Build Success : $IMAGE"
+
+# 
+ENV_FILE="$SCRIPT_DIR/.env"
+if [ -f "$ENV_FILE" ]; then
+    # sed의 구분자로 '/' 대신 '|'를 사용하여 이미지 경로에 포함될 수 있는 '/' 문자와 충돌 방지
+    # macOS와 Linux 모두 호환되도록 -i.bak 옵션 사용 후 백업 파일 삭제
+    sed -i.bak "s|^FLINK_IMAGE=.*|FLINK_IMAGE=$IMAGE|" "$ENV_FILE"
+    rm -f "${ENV_FILE}.bak"
+    
+    echo "✅ Updated .env: FLINK_IMAGE=$IMAGE"
+else
+    echo "⚠️ .env file not found at $ENV_FILE. Skipping update."
+fi
+
 # 6. Skaffold가 push를 요구할 경우(push: true) push 수행
 if [ "${PUSH_IMAGE:-false}" = "true" ]; then
     echo "Pushing image: $IMAGE"

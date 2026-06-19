@@ -6,12 +6,9 @@ FROM flink:1.20.4-java17
 # Flink 내부 기본 유저(flink:flink) 권한으로 파일 전송 및 소유권 변경
 # Flink 공식 이미지는 /opt/flink/usrlib 디렉토리를 기본 지원하거나 내부 처리가 되어 있습니다.
 WORKDIR /opt/flink
-COPY --chown=flink:flink ./build/libs/*-all.jar /opt/flink/usrlib/app.jar
+# COPY --chown=flink:flink ./build/libs/*-all.jar /opt/flink/usrlib/app.jar
+COPY --chown=flink:flink ./build/libs/*-all.jar /opt/flink/lib/app.jar
 
 # Expose app.jar to the AppClassLoader so Flink's HadoopUtils can see Hadoop classes
 # ENV HADOOP_CLASSPATH="/opt/flink/usrlib/app.jar"
-# USER root
-# RUN wget -qO /opt/flink/lib/hadoop-client-api-3.3.4.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-client-api/3.3.4/hadoop-client-api-3.3.4.jar && \
-#     wget -qO /opt/flink/lib/hadoop-client-runtime-3.3.4.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-client-runtime/3.3.4/hadoop-client-runtime-3.3.4.jar && \
-#     chown flink:flink /opt/flink/lib/hadoop-client-*.jar
-# USER flink
+# ENV HADOOP_CLASSPATH="/opt/flink/lib/app.jar"
