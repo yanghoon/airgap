@@ -9,8 +9,10 @@ dependencies {
     implementation(project(":starters:flink-table"))
     implementation(project(":starters:flink-logging"))
 
-    shadowImplementation(project(":starters:flink-kafka"))
-    shadowImplementation(project(":starters:flink-iceberg"))
+    // shadowImplementation(project(":starters:flink-kafka"))
+    // shadowImplementation(project(":starters:flink-iceberg"))
+    implementation(project(":starters:flink-kafka"))
+    implementation(project(":starters:flink-iceberg"))
     shadowImplementation(project(":jobs:common"))
 
     // runtimeOnly(project(":starters:flink-core"))

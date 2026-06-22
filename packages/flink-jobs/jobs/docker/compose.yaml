@@ -1,13 +1,13 @@
 x-extra-hosts: &hosts
-# for Iceberg
-- iceberg-rest.local:host-gateway
-- minio.local:host-gateway
-# for Kafka
-- redpanda:host-gateway
-- my-cluster.kafka.local:host-gateway
-- broker-0-my-cluster.kafka.local:host-gateway
-- broker-1-my-cluster.kafka.local:host-gateway
-- broker-2-my-cluster.kafka.local:host-gateway
+  # for Iceberg
+  - iceberg-rest.local:host-gateway
+  - minio.local:host-gateway
+  # for Kafka
+  - redpanda:host-gateway
+  - my-cluster.kafka.local:host-gateway
+  - broker-0-my-cluster.kafka.local:host-gateway
+  - broker-1-my-cluster.kafka.local:host-gateway
+  - broker-2-my-cluster.kafka.local:host-gateway
 
 x-flink-properties: &flink-properties |
   jobmanager.rpc.address: jobmanager

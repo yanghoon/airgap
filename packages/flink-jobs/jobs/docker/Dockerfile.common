@@ -8,6 +8,7 @@ FROM flink:1.20.4-java17
 WORKDIR /opt/flink
 # COPY --chown=flink:flink ./build/libs/*-all.jar /opt/flink/usrlib/app.jar
 COPY --chown=flink:flink ./build/libs/*-all.jar /opt/flink/lib/app.jar
+COPY --chown=flink:flink ./build/platform-libs/ /opt/flink/lib/
 
 # Expose app.jar to the AppClassLoader so Flink's HadoopUtils can see Hadoop classes
 # ENV HADOOP_CLASSPATH="/opt/flink/usrlib/app.jar"

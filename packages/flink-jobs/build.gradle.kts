@@ -21,22 +21,39 @@ subprojects {
             }
         }
 
+        val platformLibs by configurations.creating {
+            exclude(group = "org.slf4j", module = "slf4j-log4j12")
+            exclude(group = "log4j", module = "log4j")
+            exclude(group = "ch.qos.logback", module = "logback-classic")
+            exclude(group = "org.apache.logging.log4j", module = "log4j-to-slf4j")
+            exclude(group = "commons-cli", module = "commons-cli")
+        }
+
+        afterEvaluate {
+            val excludedStarters = setOf(
+                ":starters:flink-core",
+                ":starters:flink-table",
+                ":starters:flink-logging"
+            )
+
+            configurations.named("implementation").get().dependencies
+                .filterIsInstance<ProjectDependency>()
+                .filter { it.dependencyProject.path.startsWith(":starters:") }
+                .filterNot { it.dependencyProject.path in excludedStarters }
+                .forEach { dependencies.add(platformLibs.name, it) }
+        }
+
+        val copyPlatformLibs by tasks.registering(Copy::class) {
+            val targetDir = layout.buildDirectory.dir("platform-libs")
+            doFirst { mkdir(targetDir) }
+            from(platformLibs)
+            into(targetDir)
+        }
+
         // 
         pluginManager.withPlugin("com.gradleup.shadow") {
             val shadowImplementation by configurations.creating {
                 description = "Dependencies that will be bundled into the Shadow/Fat JAR"
-
-                description = "Dependencies that will be bundled into the Shadow/Fat JAR"
-                
-                // 1. 파라미터 파싱 충돌 방지 (NoSuchMethodError 원인)
-                exclude(group = "commons-cli", module = "commons-cli")
-                exclude(group = "org.apache.commons", module = "commons-math3")
-                
-                // 2. 구형 로깅 라이브러리 하이재킹 방지 (SLF4J Multiple bindings 원인)
-                exclude(group = "org.slf4j", module = "slf4j-log4j12")
-                exclude(group = "log4j", module = "log4j")
-                exclude(group = "ch.qos.logback", module = "logback-classic")
-                exclude(group = "org.apache.logging.log4j", module = "log4j-to-slf4j")
             }
 
             configurations.named("implementation") {
@@ -44,6 +61,8 @@ subprojects {
             }
 
             tasks.withType<ShadowJar>().configureEach {
+                dependsOn(copyPlatformLibs)
+
                 configurations = listOf(shadowImplementation)
             }
         }
