@@ -21,26 +21,14 @@ subprojects {
             }
         }
 
+        // 
         val platformLibs by configurations.creating {
             exclude(group = "org.slf4j", module = "slf4j-log4j12")
             exclude(group = "log4j", module = "log4j")
             exclude(group = "ch.qos.logback", module = "logback-classic")
             exclude(group = "org.apache.logging.log4j", module = "log4j-to-slf4j")
             exclude(group = "commons-cli", module = "commons-cli")
-        }
-
-        afterEvaluate {
-            val excludedStarters = setOf(
-                ":starters:flink-core",
-                ":starters:flink-table",
-                ":starters:flink-logging"
-            )
-
-            configurations.named("implementation").get().dependencies
-                .filterIsInstance<ProjectDependency>()
-                .filter { it.dependencyProject.path.startsWith(":starters:") }
-                .filterNot { it.dependencyProject.path in excludedStarters }
-                .forEach { dependencies.add(platformLibs.name, it) }
+            exclude(group = "org.apache.commons", module = "commons-math3")
         }
 
         val copyPlatformLibs by tasks.registering(Copy::class) {
@@ -60,10 +48,22 @@ subprojects {
                 extendsFrom(shadowImplementation)
             }
 
-            tasks.withType<ShadowJar>().configureEach {
-                dependsOn(copyPlatformLibs)
+            afterEvaluate {
+                val excludedStarters = setOf(/* ":starters:flink-core", ":starters:flink-table", ":starters:flink-logging" */)
 
-                configurations = listOf(shadowImplementation)
+                shadowImplementation.dependencies
+                    .filterIsInstance<ProjectDependency>()
+                    .filter { it.dependencyProject.path.startsWith(":starters:") }
+                    .filterNot { it.dependencyProject.path in excludedStarters }
+                    .forEach { dep ->
+                        dependencies.add(platformLibs.name, dep)
+                        shadowImplementation.dependencies.remove(dep)
+                    }
+
+                tasks.withType<ShadowJar>().configureEach {
+                    dependsOn(copyPlatformLibs)
+                    configurations = listOf(shadowImplementation)
+                }
             }
         }
     }
