@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: tei-model-downloader
+  namespace: dify
+spec:
+  selector:
+    matchLabels:
+      app: tei-model-downloader
+  template:
+    metadata:
+      labels:
+        app: tei-model-downloader
+    spec:
+      containers:
+      - name: downloader
+        image: ghcr.io/oras-project/oras:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Downloading model with ORAS..."
+            # TODO: Update the ORAS registry URL below at deployment time
+            oras pull public.ecr.aws/example/tei-model:latest -o /data/models/intfloat/multilingual-e5-small
+            echo "Download complete. Sleeping infinitely to keep DaemonSet running."
+            sleep infinity
+        volumeMounts:
+        - name: model-data
+          mountPath: /data
+      volumes:
+      - name: model-data
+        hostPath:
+          path: /opt/tei-models
+          type: DirectoryOrCreate

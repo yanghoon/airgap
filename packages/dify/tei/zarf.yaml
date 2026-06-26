@@ -7,10 +7,10 @@ components:
   - name: tei-embedding
     required: false
     manifests:
-      - name: tei-pvc
+      - name: tei-downloader
         namespace: dify
         files:
-          - tei-pvc.yaml
+          - tei-downloader-daemonset.yaml
     charts:
       - name: text-embeddings-inference
         url: https://infracloudio.github.io/charts/
@@ -20,3 +20,4 @@ components:
           - tei-values.yaml
     images:
       - ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+      - ghcr.io/oras-project/oras:latest

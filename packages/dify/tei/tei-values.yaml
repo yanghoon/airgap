@@ -2,6 +2,8 @@ image:
   repository: ghcr.io/huggingface/text-embeddings-inference
   tag: cpu-latest
 
+kind: DaemonSet
+
 config:
   # 모델이 /data 경로에 오프라인 형태로 제공된다고 가정합니다.
   modelID: /data/models/intfloat/multilingual-e5-small
@@ -19,8 +21,9 @@ ingress:
 
 volumes:
   - name: model-data
-    persistentVolumeClaim:
-      claimName: tei-model-pvc
+    hostPath:
+      path: /opt/tei-models
+      type: DirectoryOrCreate
 
 volumeMounts:
   - name: model-data

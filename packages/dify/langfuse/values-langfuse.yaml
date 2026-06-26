@@ -1,0 +1,103 @@
+langfuse:
+  # Langfuse 웹/워커 파드 1개만 실행
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+  env:
+    NEXTAUTH_URL: "http://langfuse.local"
+  salt:
+    value: "my-salt-key-123456789012345678"
+  # ENCRYPTION_KEY 생성 방법: openssl rand -hex 32
+  encryptionKey:
+    value: "4e2a3c25d6f49426c9b77b757814963e0c1855f00526d229b308b30517707e47"
+  nextauth:
+    url: "http://langfuse.local"
+    secret:
+      value: "my-super-secret-key-1234567890"
+  ingress:
+    enabled: true
+    # className: "nginx" # 사내에서 traefik 등 다른 컨트롤러를 쓴다면 변경하세요.
+    hosts:
+      - host: langfuse.local    # [수정됨] 요청하신 로컬 도메인
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+  # web:
+  #   livenessProbe:
+  #     initialDelaySeconds: 60
+  #     periodSeconds: 10
+  #     timeoutSeconds: 10
+  #     failureThreshold: 6
+  #   readinessProbe:
+  #     initialDelaySeconds: 60
+  #     periodSeconds: 10
+  #     timeoutSeconds: 10
+  #     failureThreshold: 6
+
+# 1. ClickHouse (최소 단일 노드)
+clickhouse:
+  deploy: true
+  replicaCount: 1
+  auth:
+    password: "langfuse-ch-password"
+  shards: 1
+  zookeeper:
+    replicaCount: 1 # 주키퍼도 최소로 구동
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+
+# 2. PostgreSQL (이중화 없는 Standalone 모드)
+postgresql:
+  deploy: true
+  architecture: standalone
+  auth:
+    password: "langfuse-db-password"
+    postgresPassword: "langfuse-db-password"
+  primary:
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "512Mi"
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+
+# 3. Redis (마스터 1개만 실행, Sentinel 끔)
+redis:
+  deploy: true
+  architecture: standalone
+  auth:
+    password: "langfuse-redis-password"
+  master:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        cpu: "250m"
+        memory: "512Mi"
+
+# 4. S3 호환 스토리지 (MinIO 단일 노드 모드)
+s3:
+  deploy: true
+  mode: standalone # 분산 모드(distributed) 해제
+  auth:
+    rootPassword: "langfuse-minio-password"
+  accessKeyId:
+    value: "minio"
+  secretAccessKey:
+    value: "langfuse-minio-password"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"

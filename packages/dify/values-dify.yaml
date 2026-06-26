@@ -88,8 +88,10 @@ postgresql:
     tag: 17.6.0
 
 weaviate:
-  # TODD:
-  enabled: false
+  enabled: true
+  storage:
+    size: 1Gi
+    storageClassName: standard
 
 externalS3:
   enabled: true

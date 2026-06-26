@@ -1,0 +1,64 @@
+langfuse:
+  # 프로덕션 권장 리소스 할당
+  resources:
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+    requests:
+      cpu: "2"
+      memory: "4Gi"
+  env:
+    # 도메인 및 접속 정보 (실제 환경에 맞게 수정)
+    NEXTAUTH_URL: "http://langfuse.internal.com"
+    
+    # [필수] 보안 키 설정 (운영 환경에서는 반드시 강력한 난수로 변경)
+    NEXTAUTH_SECRET: "change-this-to-a-random-32-char-secret"
+    SALT: "change-this-to-a-random-32-char-salt"
+    ENCRYPTION_KEY: "change-this-to-a-random-64-char-hex-key"
+    
+    # 초기 관리자 계정 생성
+    LANGFUSE_INIT_USER_EMAIL: "admin@yourcompany.com"
+    LANGFUSE_INIT_USER_PASSWORD: "SuperSecretPassword123!"
+
+# 인그레스 설정 (필요 시 활성화)
+ingress:
+  enabled: true
+  className: "nginx" # 사내 인프라에 맞춰 traefik 등으로 변경
+  hosts:
+    - host: langfuse.internal.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+# ==========================================
+# 내부 의존성 인프라 (Bitnami Subcharts)
+# ==========================================
+
+clickhouse:
+  deploy: true
+  resources:
+    limits:
+      cpu: "2"
+      memory: "8Gi"
+    requests:
+      cpu: "2"
+      memory: "8Gi"
+
+postgresql:
+  deploy: true
+  primary:
+    resources:
+      limits:
+        cpu: "2"
+        memory: "4Gi"
+        
+redis:
+  deploy: true
+  primary:
+    resources:
+      limits:
+        cpu: "1"
+        memory: "1.5Gi"
+
+s3:
+  deploy: true # MinIO를 통해 로컬 S3 호환 스토리지 구축
