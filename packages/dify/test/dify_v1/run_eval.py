@@ -91,19 +91,34 @@ for item in dataset_items:
         requests.post(f"{LANGFUSE_HOST}/api/public/generations", auth=auth, json=generation_payload).raise_for_status()
         print("✅ Trace & Generation created in Langfuse.")
         
+        # Langfuse 서버가 Generation을 비동기(Kafka)로 DB에 반영할 때까지 약간의 대기가 필요할 수 있습니다.
+        import time
+        time.sleep(2)
+        
         # Dataset Run Item 생성 (Dataset Item과 Generation 연결)
-        # 참고: 구버전 Langfuse의 경우 해당 엔드포인트가 없어 404 에러가 발생할 수 있음
         run_item_payload = {
             "datasetItemId": item_id,
             "observationId": generation_id,
             "runName": RUN_NAME
         }
-        run_resp = requests.post(f"{LANGFUSE_HOST}/api/public/dataset-run-items", auth=auth, json=run_item_payload)
-        if run_resp.status_code == 404:
-            print("⚠️ Dataset Run Link skipped (API not supported in this Langfuse version, but trace is saved!)")
-        else:
-            run_resp.raise_for_status()
-            print("✅ Successfully linked to Dataset Run.")
+        
+        # 재시도 로직 추가 (최대 3회)
+        max_retries = 3
+        linked = False
+        for attempt in range(max_retries):
+            run_resp = requests.post(f"{LANGFUSE_HOST}/api/public/dataset-run-items", auth=auth, json=run_item_payload)
+            if run_resp.status_code == 200:
+                print("✅ Successfully linked to Dataset Run.")
+                linked = True
+                break
+            elif run_resp.status_code == 404:
+                print(f"⏳ Observation not yet found by Langfuse DB, retrying ({attempt+1}/{max_retries})...")
+                time.sleep(2)
+            else:
+                run_resp.raise_for_status()
+                
+        if not linked:
+             print("⚠️ Failed to link to Dataset Run after retries.")
             
         success_count += 1
         
