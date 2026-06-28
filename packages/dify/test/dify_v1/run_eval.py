@@ -77,7 +77,7 @@ for item in dataset_items:
         trace = langfuse.trace(
             name=RUN_NAME,
             input=user_msg,
-            output=formatted_output, # Trace 자체에도 output 명시
+            output=formatted_output,
             tags=["dataset-eval"]
         )
         
@@ -88,13 +88,16 @@ for item in dataset_items:
             output=formatted_output
         )
         
-        # 강제로 점수 1.0 삽입 (테스트가 항상 성공한 것처럼 보이도록 고정)
-        # Dify의 응답에 파이리가 없더라도 파이프라인 검증을 위해 무조건 1.0을 Push합니다.
-        trace.score(
-            name="exactness",
-            value=1.0,
-            comment="Forced Success Score by Evaluation Script"
-        )
+        # ----------------------------------------------------
+        # Langfuse 빌트인 LLM 평가기 (Managed Evaluators) 활용
+        # ----------------------------------------------------
+        # 이제 Python 스크립트에서 단순 텍스트 비교(difflib 등)를 통해 점수를 강제로 매기지 않습니다.
+        # Trace와 Generation에 input, output, expectedOutput이 정확히 기록되었으므로,
+        # Langfuse UI의 [Evaluators] 메뉴에서 LLM-as-a-judge (의미론적 유사도 등)를 
+        # 설정해두면 Langfuse 서버가 자동으로 LLM을 호출하여 정확한 유사도를 채점합니다.
+        
+        # (만약 테스트용으로 즉각적인 결과를 보고 싶다면 이곳에 OpenAI 등을 연동할 수 있지만, 
+        # 질문하신 "Langfuse 빌트인 평가기"를 사용하려면 스크립트 개입을 최소화하는 것이 정석입니다.)
         
         # Dataset Run Item 생성 로직
         # SDK 큐를 비워 DB에 Trace가 먼저 반영되게 한 후 REST API로 링크
