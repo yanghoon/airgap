@@ -1,0 +1,17 @@
+image:
+  tag: 1.30.0
+
+config:
+  INHERITED_ANNOTATIONS: "true"
+  INHERITED_LABELS: "true"
+
+  # 백업 관련 설정 (불필요한 클라우드 프로바이더 로직 비활성화)
+  ENABLE_AZURE_WAL_ARCHIVE: "false"
+  ENABLE_GCP_WAL_ARCHIVE: "false"
+  # MinIO(S3 호환) 백업을 사용할 예정이므로 활성화 유지
+  ENABLE_S3_WAL_ARCHIVE: "true"
+
+# Prometheus Operator 연동 (클러스터에 Kube-Prometheus-Stack이 있다면 true로 변경)
+monitoring:
+  podMonitor:
+    enabled: true

@@ -1,0 +1,66 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: single-node-pg
+  namespace: default
+spec:
+  instances: 1 # 1개 노드 구성
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  
+  # OpenEBS LocalPV (Hostpath) 연동
+  storage:
+    size: 1Gi
+    storageClass: openebs-hostpath
+  
+  # 💡 Barman Cloud 플러그인 활성화 및 ObjectStore 연결
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true # 이 클러스터에서 발생하는 WAL 파일을 위 ObjectStore로 전송하겠다는 의미
+      parameters:
+        barmanObjectName: minio-backup-store # 앞서 생성한 ObjectStore CR의 이름
+
+# apiVersion: postgresql.cnpg.io/v1
+# kind: Cluster
+# metadata:
+#   name: single-node-pg
+#   namespace: default
+# spec:
+#   # 1개 노드 구성 (단일 인스턴스)
+#   instances: 1 
+  
+#   # Zarf 폐쇄망 환경을 위한 이미지 명시 (Zarf가 내부 레지스트리로 자동 변환함)
+#   imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  
+#   # OpenEBS LocalPV 설정
+#   storage:
+#     size: 50Gi
+#     storageClass: openebs-hostpath # 실제 사용 중인 StorageClass 명칭
+  
+#   # CNPG-I Barman Cloud 플러그인 활성화
+#   plugins:
+#     - name: barman-cloud.cloudnative-pg.io
+
+#   # 백업 및 WAL 아카이빙 설정 (플러그인이 이 설정을 기반으로 동작)
+#   backup:
+#     barmanObjectStore:
+#       destinationPath: "s3://pg-backup-bucket/"
+#       endpointURL: "http://minio-service.minio.svc.cluster.local:9000"
+#       # S3 Path Style 사용 필수 (MinIO 연동 시 보통 true로 설정)
+#       s3ForcePathStyle: true 
+#       s3Credentials:
+#         accessKeyId:
+#           name: minio-creds
+#           key: ACCESS_KEY_ID
+#         secretAccessKey:
+#           name: minio-creds
+#           key: SECRET_ACCESS_KEY
+      
+#       # WAL 실시간 아카이빙 (5분마다 또는 16MB 찰 때마다 MinIO로 전송)
+#       wal:
+#         compression: gzip
+#         maxParallel: 2 # 네트워크 전송 속도를 높이기 위한 병렬 처리
+
+#       # 기본 물리 백업(Base Backup) 설정
+#       data:
+#         compression: gzip
+#         jobs: 2

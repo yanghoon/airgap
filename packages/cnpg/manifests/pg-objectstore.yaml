@@ -1,0 +1,35 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: minio-backup-store
+  namespace: default
+spec:
+  configuration:
+    endpointURL: http://minio-service.minio.svc.cluster.local:9000
+    destinationPath: s3://pg-backup-bucket/
+    s3ForcePathStyle: true
+    s3Credentials:
+      accessKeyId:
+        name: minio-creds
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: minio-creds
+        key: SECRET_ACCESS_KEY
+    
+    wal:
+      compression: gzip
+      maxParallel: 2
+      
+    data:
+      compression: gzip
+      jobs: 2
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: s3-creds
+  namespace: default # DB가 배포될 네임스페이스
+type: Opaque
+stringData:
+  ACCESS_KEY_ID: your-minio-access-key
+  SECRET_ACCESS_KEY: your-minio-secret-key

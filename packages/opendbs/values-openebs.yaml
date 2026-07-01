@@ -1,0 +1,31 @@
+# LocalPV Provisioner 활성화 (Hostpath 기반)
+localpv-provisioner:
+  enabled: true
+  
+  localpv:
+    # Worker Node에서 데이터가 저장될 실제 경로 (운영 환경에 맞게 수정)
+    basePath: /var/openebs/local
+
+  # analytics:
+  #   enabled: false # 폐쇄망이므로 원격 텔레메트리 전송 비활성화
+
+  # OpenEBS Hostpath를 클러스터의 기본(Default) StorageClass로 사용할지 여부
+  # 클러스터에 다른 기본 SC(예: rke2의 local-path)가 있다면 false로 유지하세요.
+  helperPod:
+    image:
+      # Zarf 이미지 자동 탐색을 돕기 위해 명시 (Zarf가 내부망 주소로 자동 변경함)
+      repository: openebs/linux-utils
+      tag: 3.4.0 # v4.5.0 차트와 호환되는 linux-utils 버전
+
+# 사용하지 않는 스토리지 엔진 비활성화 (패키지 경량화)
+mayastor:
+  enabled: false # Replicated PV (Mayastor) 비활성화
+
+lvm-localpv:
+  enabled: false # LVM 기반 LocalPV 비활성화
+
+zfs-localpv:
+  enabled: false # ZFS 기반 LocalPV 비활성화
+
+legacy:
+  enabled: false # cStor, Jiva 등 구버전 엔진 완전 비활성화

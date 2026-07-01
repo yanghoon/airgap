@@ -1,0 +1,23 @@
+kind: ZarfPackageConfig
+metadata:
+  name: cloudnative-pg
+  description: CloudNativePG 1.30.x and Plugins for Airgap
+  version: 1.30.0
+
+components:
+  - name: cnpg-operator
+    required: true
+    description: Install CNPG Operator via Helm
+    charts:
+      - name: cloudnative-pg
+        releaseName: cnpg
+        url: https://cloudnative-pg.github.io/charts
+        version: 0.22.0
+        namespace: cnpg-system
+        valuesFiles:
+          - values-cnpg.yaml
+    
+    images:
+      - ghcr.io/cloudnative-pg/postgresql:16.4
+      - ghcr.io/cloudnative-pg/postgresql:15.8
+      - ghcr.io/cloudnative-pg/barman-cloud:1.30.0

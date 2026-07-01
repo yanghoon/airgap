@@ -1,0 +1,17 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: single-node-pg-daily-backup
+  namespace: default
+spec:
+  # 매일 새벽 2시에 실행 (서버의 Timezone 기준)
+  schedule: "0 0 2 * * *" 
+  
+  # 백업이 어떤 클러스터에 속하는지 연결
+  cluster:
+    name: single-node-pg
+  
+  # CNPG-I 플러그인 방식으로 백업 수행 명시
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
