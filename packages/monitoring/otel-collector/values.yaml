@@ -1,0 +1,60 @@
+mode: deployment
+
+# https://opentelemetry.io/docs/collector/distributions/
+image:
+  repository: otel/opentelemetry-collector
+  # repository: otel/opentelemetry-collector-contrib
+  # repository: otel/opentelemetry-collector-k8s
+  # repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+
+command:
+  name: otelcol-k8s
+
+extraEnvsFrom:
+  - secretRef:
+      name: otel-collector-sec
+
+config:
+  receivers:
+    kafka/topic_a:
+      brokers: 
+        - my-kafka-bootstrap.kafka.svc.cluster.local:9092
+      topic: app-log-topic-a
+      encoding: raw
+    # kafka/topic_b:
+    #   brokers: 
+    #     - my-kafka-bootstrap.kafka.svc.cluster.local:9092
+    #   topic: app-log-topic-b
+    #   encoding: raw
+
+  processors:
+    batch:
+      send_batch_size: 8192
+      timeout: 1s
+
+  exporters:
+    otlphttp/target_a:
+      # Important: otelhttp exporter automatically appends "/v1/logs" to the endpoint.
+      # eg. "https://my-storage:4318" becomes "https://my-storage:4318/v1/logs"
+      endpoint: https://opensearch.local:4318
+      headers:
+        X-API-Key: ${OPENSEARCH_KEY_TARGET_A} # from secret
+      tls:  # true if you want to enable TLS, false otherwise
+        insecure: true
+    # otlphttp/target_b:
+    #   endpoint: https://es.local:4318
+    #   headers:
+    #     X-API-Key: ${OPENSEARCH_KEY_TARGET_B}
+    #   tls:
+    #     insecure: true
+
+  service:
+    pipelines:
+      logs/pipeline_a:
+        receivers: [ kafka/topic_a ]
+        processors: [ batch ]
+        exporters: [ otlphttp/target_a ]
+      # logs/pipeline_b:
+      #   receivers: [ kafka/topic_b ]
+      #   processors: [ batch ]
+      #   exporters: [ otlphttp/target_b ]

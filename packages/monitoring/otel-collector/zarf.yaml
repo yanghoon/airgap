@@ -1,0 +1,24 @@
+kind: ZarfPackageConfig
+metadata:
+  name: otel-collector
+  description: OpenTelemetry Collector Helm chart configuration for Zarf
+  version: 0.162.0
+
+components:
+  - name: otel-collector
+    required: true
+    description: Deploys the OpenTelemetry Collector using a Helm chart
+    charts:
+      - name: opentelemetry-collector
+        releaseName: otel-collector
+        url: https://open-telemetry.github.io/opentelemetry-helm-charts
+        version: 0.162.0
+        namespace: monitoring
+        valuesFiles:
+          - values.yaml
+    manifests:
+      - name: otel-collector-sec
+        files:
+          - manifests/otel-collector-sec.yaml
+    images:
+      - otel/opentelemetry-collector:0.154.0
