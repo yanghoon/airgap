@@ -5,6 +5,15 @@ metadata:
   version: 0.162.0
 
 components:
+
+  - name: otel-collector-sec
+    required: true
+    description: Secret for OpenTelemetry Collector configuration
+    manifests:
+      - name: otel-collector-sec
+        files:
+          - manifests/otel-collector-sec.yaml
+
   - name: otel-collector
     required: true
     description: Deploys the OpenTelemetry Collector using a Helm chart
@@ -16,9 +25,5 @@ components:
         namespace: monitoring
         valuesFiles:
           - values.yaml
-    manifests:
-      - name: otel-collector-sec
-        files:
-          - manifests/otel-collector-sec.yaml
     images:
-      - otel/opentelemetry-collector:0.154.0
+      - otel/opentelemetry-collector-contrib:0.154.0

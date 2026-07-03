@@ -2,13 +2,13 @@ mode: deployment
 
 # https://opentelemetry.io/docs/collector/distributions/
 image:
-  repository: otel/opentelemetry-collector
-  # repository: otel/opentelemetry-collector-contrib
+  # repository: otel/opentelemetry-collector
+  repository: otel/opentelemetry-collector-contrib
   # repository: otel/opentelemetry-collector-k8s
   # repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
 
 command:
-  name: otelcol-k8s
+  name: otelcol-contrib
 
 extraEnvsFrom:
   - secretRef:
@@ -18,29 +18,58 @@ config:
   receivers:
     kafka/topic_a:
       brokers: 
-        - my-kafka-bootstrap.kafka.svc.cluster.local:9092
-      topic: app-log-topic-a
-      encoding: raw
+        - my-cluster-kafka-bootstrap.kafka-operator.svc.cluster.local:9092
+      topics: [ app-log-topic-a ]
+      encoding: text
     # kafka/topic_b:
     #   brokers: 
-    #     - my-kafka-bootstrap.kafka.svc.cluster.local:9092
-    #   topic: app-log-topic-b
-    #   encoding: raw
+    #     - my-cluster-kafka-bootstrap.kafka-operator.svc.cluster.local:9092
+    #   topics: [ app-log-topic-b ]
+    #   encoding: text
 
   processors:
     batch:
       send_batch_size: 8192
       timeout: 1s
+    transform/hostname:
+      error_mode: ignore
+      log_statements:
+        - context: resource
+          statements:
+            - set(attributes["host.hostname"], hostname())  # or hardcode
+            - set(attributes["host.ip"], ip())  # or hardcode
+        - context: log
+          statements:
+            - merge_maps(attributes, ParseJSON(body), "upsert")
+            - set(time, observed_time)  # or parse from log body
+            - delete_key(attributes, "@timestamp")
+            - set(attributes["host.hostname"], hostname())  # or hardcode
+            - set(attributes["host.ip"], ip())  # or hardcode
+    # resource/attributes:
+    #   actions:
+    #     - key: host.hostname
+    #       value: ${HOSTNAME}
+    #       action: upsert
+    #     - key: host.ip
+    #       value: ${HOST_IP}
+    #       action: upsert
 
   exporters:
-    otlphttp/target_a:
+    debug:
+      verbosity: debug
+
+    opensearch/target_a:
       # Important: otelhttp exporter automatically appends "/v1/logs" to the endpoint.
       # eg. "https://my-storage:4318" becomes "https://my-storage:4318/v1/logs"
-      endpoint: https://opensearch.local:4318
-      headers:
-        X-API-Key: ${OPENSEARCH_KEY_TARGET_A} # from secret
-      tls:  # true if you want to enable TLS, false otherwise
-        insecure: true
+      http:
+        endpoint: https://opensearch.local:4318
+        headers:
+          # X-API-Key: ${OPENSEARCH_KEY_TARGET_A}          # from secret
+          Authorization: ApiKey ${OPENSEARCH_KEY_TARGET_A} # from secret
+        tls:  # true if you want to enable TLS, false otherwise
+          insecure_skip_verify: true
+      logs_index: logs
+
     # otlphttp/target_b:
     #   endpoint: https://es.local:4318
     #   headers:
@@ -49,11 +78,19 @@ config:
     #     insecure: true
 
   service:
+
+    telemetry:
+      logs:
+        level: debug
+        encoding: json
+
     pipelines:
+      metrics: null
+      traces: null
       logs/pipeline_a:
         receivers: [ kafka/topic_a ]
-        processors: [ batch ]
-        exporters: [ otlphttp/target_a ]
+        processors: [ transform/hostname, batch ]
+        exporters: [ opensearch/target_a, debug ]
       # logs/pipeline_b:
       #   receivers: [ kafka/topic_b ]
       #   processors: [ batch ]
