@@ -21,11 +21,6 @@ config:
         - my-cluster-kafka-bootstrap.kafka-operator.svc.cluster.local:9092
       topics: [ app-log-topic-a ]
       encoding: text
-    # kafka/topic_b:
-    #   brokers: 
-    #     - my-cluster-kafka-bootstrap.kafka-operator.svc.cluster.local:9092
-    #   topics: [ app-log-topic-b ]
-    #   encoding: text
 
   processors:
     batch:
@@ -41,10 +36,9 @@ config:
         - context: log
           statements:
             - merge_maps(attributes, ParseJSON(body), "upsert")
-            - set(time, observed_time)  # or parse from log body
+            # Parse timestamp from fluent-bit
+            - set(time_unix_nano, Int(attributes["@timestamp"] * 1000000000)) where attributes["@timestamp"] != nil
             - delete_key(attributes, "@timestamp")
-            - set(attributes["host.hostname"], hostname())  # or hardcode
-            - set(attributes["host.ip"], ip())  # or hardcode
     # resource/attributes:
     #   actions:
     #     - key: host.hostname
@@ -64,25 +58,17 @@ config:
       http:
         endpoint: https://opensearch.local:4318
         headers:
-          # X-API-Key: ${OPENSEARCH_KEY_TARGET_A}          # from secret
-          Authorization: ApiKey ${OPENSEARCH_KEY_TARGET_A} # from secret
+          # X-API-Key: ${env:OPENSEARCH_KEY_TARGET_A}          # from secret
+          Authorization: ApiKey ${env:OPENSEARCH_KEY_TARGET_A} # from secret
         tls:  # true if you want to enable TLS, false otherwise
           insecure_skip_verify: true
       logs_index: logs
 
-    # otlphttp/target_b:
-    #   endpoint: https://es.local:4318
-    #   headers:
-    #     X-API-Key: ${OPENSEARCH_KEY_TARGET_B}
-    #   tls:
-    #     insecure: true
-
   service:
-
-    telemetry:
-      logs:
-        level: debug
-        encoding: json
+    # telemetry:
+    #   logs:
+    #     level: debug
+    #     encoding: json
 
     pipelines:
       metrics: null
@@ -90,8 +76,4 @@ config:
       logs/pipeline_a:
         receivers: [ kafka/topic_a ]
         processors: [ transform/hostname, batch ]
-        exporters: [ opensearch/target_a, debug ]
-      # logs/pipeline_b:
-      #   receivers: [ kafka/topic_b ]
-      #   processors: [ batch ]
-      #   exporters: [ otlphttp/target_b ]
+        exporters: [ debug, opensearch/target_a ]
